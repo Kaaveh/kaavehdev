@@ -62,3 +62,13 @@ confirm the build command in the Cloudflare dashboard (Workers & Pages → kaave
 
 Design tokens, fonts, themes (002); any real content (003+); nav (013); SEO meta
 beyond a sane `<title>` (014).
+
+## Implementation notes
+
+- Astro 7.0.6 (latest stable at implementation time) requires **Node ≥ 22.12.0**,
+  not Node 20+ as CLAUDE.md originally stated. CLAUDE.md and the package.json
+  `engines` field were updated accordingly.
+- Since Astro 3, `astro build` no longer type-checks on its own. To keep the
+  acceptance criterion "`npm run build` type-checks `.astro` files" true, the
+  `build` script is `astro check && astro build`, with `@astrojs/check` and
+  `typescript` (5.x, per `@astrojs/check`'s peer range) as devDependencies.
