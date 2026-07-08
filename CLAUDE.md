@@ -43,8 +43,7 @@ session. The specs live in `specs/`.
   (`assets.directory` becomes `./dist` in spec 001). Local prod-like check:
   `npm run build && npx wrangler dev`.
 - Deployment: Cloudflare Workers Builds on push to `main`. The dashboard build
-  command must be `npm run build` once spec 001 lands (human step — remind Kaaveh
-  if unverified).
+  command is `npm run build` (confirmed by Kaaveh, 2026-07-08).
 
 ## Quality bar (details in specs/000-overview.md)
 
