@@ -36,16 +36,14 @@ session. The specs live in `specs/`.
 
 ## Stack facts
 
-- Astro with static output, TypeScript — introduced by spec 001. Until 001 is done
-  the repo is just a placeholder `index.html` served from the repo root.
-- Node 20+, npm. After spec 001: `npm install`, `npm run dev`,
-  `npm run build` (outputs `dist/`), `npm run preview`.
+- Astro with static output, TypeScript strict — introduced by spec 001.
+- Node 22.12+ (required by Astro 7), npm. `npm install`, `npm run dev`,
+  `npm run build` (runs `astro check`, then outputs `dist/`), `npm run preview`.
 - Cloudflare Workers serves static assets per `wrangler.jsonc`
   (`assets.directory` becomes `./dist` in spec 001). Local prod-like check:
   `npm run build && npx wrangler dev`.
 - Deployment: Cloudflare Workers Builds on push to `main`. The dashboard build
-  command must be `npm run build` once spec 001 lands (human step — remind Kaaveh
-  if unverified).
+  command is `npm run build` (confirmed by Kaaveh, 2026-07-08).
 
 ## Quality bar (details in specs/000-overview.md)
 
