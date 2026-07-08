@@ -109,3 +109,22 @@ piece works; it will be replaced by spec 004.
 ## Out of scope
 
 Real content/sections (003+), nav (013), OG/meta (014).
+
+## Implementation notes
+
+- **Light `--accent` is darker than the spec's example.** The suggested `#0E9F5B`
+  measures only ~3.4:1 on white, but `.section-label` renders accent at small text
+  size, which needs 4.5:1. Shipped `#0B8043` instead: 4.85:1 on `--bg` (`#FAFBFD`)
+  and 5.02:1 on `--surface` (`#FFFFFF`). All other shades match the spec's examples.
+- Contrast verified programmatically (WCAG 2.x formula) for every used pair in both
+  themes: `--text` and `--text-2` on `--bg`/`--surface`/`--surface-2` (all ≥ 6.6:1),
+  `--accent` on `--bg`/`--surface` (dark ≥ 10.1:1, light ≥ 4.85:1), and the
+  `--accent-2` focus outline on `--bg` (4.19:1 dark / 5.79:1 light, need 3:1).
+- Fonts are the `@fontsource-variable/*` npm packages (Space Grotesk, Inter,
+  JetBrains Mono), bundled by Astro into `dist/_astro/*.woff2`; the heading font's
+  latin woff2 is preloaded via an Astro `?url` import in `Base.astro`.
+- `ThemeToggle.astro` is positioning-agnostic; the page places it (top-right wrapper
+  in the demo `index.astro`), which keeps spec 013's relocation into the nav trivial.
+- The reduced-motion guard targets `.reveal, .reveal.is-visible` so the
+  `.is-visible` transform can never out-specify the guard — copy this pattern for
+  every animation added by later specs.

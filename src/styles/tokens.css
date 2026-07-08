@@ -1,0 +1,67 @@
+/*
+ * Design tokens — spec 002.
+ * :root carries the dark (default) theme; [data-theme="light"] overrides it.
+ * Contrast: every text/background pair used by the site is WCAG AA in both
+ * themes (body text >= 4.5:1, accent-2 UI usage >= 3:1) — verified pairs are
+ * listed in specs/002-design-system.md Implementation notes.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* Color */
+  --bg: #0b0e14;
+  --surface: #12161f;
+  --surface-2: #1a2029;
+  --text: #f2f5fa;
+  --text-2: #9ba6b5;
+  --accent: #3ddc84; /* Android green */
+  --accent-2: #7f52ff; /* Kotlin violet */
+  --gradient: linear-gradient(135deg, var(--accent-2), var(--accent));
+  --border: #252c39;
+
+  /* Spacing — 4px base */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Radii */
+  --radius: 16px;
+  --radius-sm: 8px;
+
+  /* Elevation */
+  --shadow: 0 4px 16px rgb(0 0 0 / 0.35);
+  --glow: 0 8px 32px rgb(61 220 132 / 0.25);
+
+  /* Motion */
+  --transition: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Type */
+  --font-heading: 'Space Grotesk Variable', 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --text-hero: clamp(2.5rem, 1.6rem + 4.5vw, 5rem);
+  --text-h2: clamp(1.75rem, 1.48rem + 1.35vw, 2.5rem);
+  --text-body: clamp(1rem, 0.955rem + 0.225vw, 1.125rem);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #fafbfd;
+  --surface: #ffffff;
+  --surface-2: #f1f4f9;
+  --text: #12161f;
+  --text-2: #4a5568;
+  --accent: #0b8043; /* darker green: >= 4.5:1 on --bg/--surface */
+  --accent-2: #6b3fe8;
+  --border: #dde3ec;
+
+  --shadow: 0 4px 16px rgb(18 22 31 / 0.08);
+  --glow: 0 8px 32px rgb(11 128 67 / 0.2);
+}

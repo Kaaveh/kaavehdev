@@ -1,0 +1,51 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import headingFontUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <script is:inline>
+      // Pre-paint theme: localStorage -> prefers-color-scheme -> dark.
+      (function () {
+        var theme = 'dark';
+        try {
+          var stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+          } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+            theme = 'light';
+          }
+        } catch (e) {
+          /* no localStorage: fall through to the default */
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <link rel="preload" href={headingFontUrl} as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <main id="main">
+      <slot />
+    </main>
+    <script>
+      import '../scripts/reveal';
+    </script>
+  </body>
+</html>
