@@ -63,3 +63,38 @@ Behavior & motion:
 ## Out of scope
 
 Nav bar (013), other sections, SEO meta (014).
+
+## Implementation notes
+
+- **`site.location` reformatted, not hardcoded.** The data string was
+  `"Yerevan, Armenia (Open to relocation)"`; this spec's copy is
+  *Yerevan, Armenia · Open to relocation*. Rather than transform (or hardcode)
+  it in the component, the string in `src/data/site.ts` was changed to the `·`
+  form — same facts, display-ready for every future consumer (footer 010, SEO 014).
+- **Primary button gradient is pinned to the brand shades** (`#7F52FF → #3DDC84`)
+  in both themes instead of using `var(--gradient)`. The light theme's darker
+  accents exist for text-on-light and fail 4.5:1 as a background for dark text
+  (3.5:1 on `#6B3FE8`); the brand shades with `#000` text measure 4.55:1 at the
+  gradient's worst case (violet end) and 13.2:1 at the green end.
+- **Signature flourish**: two ambient radial-gradient orbs (violet top-right,
+  green bottom-left) drifting behind the content on 18s/22s alternating loops —
+  transform-only animation, no `filter: blur()`, `pointer-events: none`,
+  clipped by `overflow: hidden` on the section (horizontal overflow verified
+  0px at 320/768/1440). Under `prefers-reduced-motion` the animation is off;
+  the static glow remains (nothing moves).
+- Icon SVGs live in the component as a `Record` keyed by contact label (brand
+  marks from Simple Icons, envelope from Material) — labels/URLs still render
+  from `site.contacts`; an unknown label renders without an icon rather than
+  breaking.
+- The `mailto:` contact opens in the same tab; only `http(s)` links get
+  `target="_blank" rel="noopener"`.
+- `index.astro`'s `<title>`/`description` now derive from `site` data too, so
+  the page carries no hardcoded resume facts anywhere (spec 014 will do SEO
+  properly).
+- Verified via Playwright/Chromium: both themes at 320/768/1440 (no horizontal
+  overflow), reduced-motion (all 6 reveal elements instantly visible, orb
+  `animation: none`), tab order (toggle → 5 contacts → 2 CTAs, 2px focus
+  outline on every stop), and the PDF served with `application/pdf` from both
+  `npm run dev` and `npx wrangler dev`. At 320×700 the CTAs start below the
+  fold and reveal on first scroll — content is never clipped (`min-height`
+  lets the hero grow).

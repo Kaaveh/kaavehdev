@@ -3,7 +3,7 @@ import type { SiteInfo } from './types';
 export const site: SiteInfo = {
   name: 'Kaaveh Mohamedi',
   title: 'Senior Android Engineer',
-  location: 'Yerevan, Armenia (Open to relocation)',
+  location: 'Yerevan, Armenia · Open to relocation',
   summary:
     '7+ years building consumer apps at scale, specializing in Jetpack Compose ' +
     'migrations, modular architecture, and developer productivity. Active ' +
