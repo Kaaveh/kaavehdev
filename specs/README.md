@@ -14,7 +14,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 001 | [Project scaffold](./001-project-scaffold.md)                   | —            | ✅ Done        |
 | 002 | [Design system](./002-design-system.md)                         | 001          | ✅ Done        |
 | 003 | [Content & data layer](./003-content-data.md)                   | 001          | ✅ Done        |
-| 004 | [Hero section](./004-hero-section.md)                           | 002, 003     | ⬜ Not started |
+| 004 | [Hero section](./004-hero-section.md)                           | 002, 003     | ✅ Done        |
 | 005 | [Experience section](./005-experience-section.md)               | 002, 003     | ⬜ Not started |
 | 006 | [Skills section](./006-skills-section.md)                       | 002, 003     | ⬜ Not started |
 | 007 | [Projects showcase](./007-projects-showcase.md)                 | 002, 003     | ⬜ Not started |

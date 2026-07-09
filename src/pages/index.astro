@@ -1,29 +1,20 @@
 ---
-// Placeholder page restyled as the living demo of the design system (spec 002).
-// Spec 004 replaces this with the real hero.
+// Home page. Hero (spec 004); specs 005–010 append the remaining sections.
 import Base from '../layouts/Base.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import Hero from '../components/sections/Hero.astro';
+import { site } from '../data/site';
 ---
 
 <Base
-  title="Kaaveh Mohamedi — Senior Android Engineer"
-  description="Personal website of Kaaveh Mohamedi, Senior Android Engineer."
+  title={`${site.name} — ${site.title}`}
+  description={`Personal website of ${site.name}, ${site.title}.`}
 >
   <div class="toggle-slot">
     <ThemeToggle />
   </div>
 
-  <section class="section hero container">
-    <p class="section-label reveal">Senior Android Engineer</p>
-    <h1 class="gradient-text reveal" data-reveal-delay="100">Kaaveh Mohamedi</h1>
-  </section>
-
-  <section class="section container">
-    <div class="card hover-lift reveal">
-      <p class="section-label">Status</p>
-      <p>This site is under construction.</p>
-    </div>
-  </section>
+  <Hero />
 </Base>
 
 <style>
@@ -31,31 +22,6 @@ import ThemeToggle from '../components/ThemeToggle.astro';
     position: absolute;
     top: var(--space-5);
     right: var(--space-5);
-  }
-
-  .hero {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--space-4);
-    min-height: 100svh;
-  }
-
-  .gradient-text {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .card {
-    max-width: 28rem;
-    padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    display: grid;
-    gap: var(--space-2);
+    z-index: 10;
   }
 </style>
