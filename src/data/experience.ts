@@ -16,6 +16,7 @@ export const experience: ExperienceEntry[] = [
         'manual QA cycle and shortening release cadence from bi-weekly to ' +
         'weekly, a 55% improvement.',
     ],
+    highlights: ['10M+', '55%'],
   },
   {
     company: 'GityMarket',
@@ -42,5 +43,6 @@ export const experience: ExperienceEntry[] = [
       'Drove a codebase-wide migration off deprecated APIs ahead of ' +
         'targetSdk 34 / Android 14 compliance.',
     ],
+    highlights: ['1,000+', '~25%', '~10%', '~20%', '40%'],
   },
 ];

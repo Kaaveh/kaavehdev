@@ -41,13 +41,52 @@ metrics (55%, ~25%, 40%, …) deserve visual emphasis.
 
 ## Acceptance criteria
 
-- [ ] Both roles render fully, bullets verbatim from `src/data/experience.ts`.
-- [ ] Metrics visually emphasized without breaking copy or semantics (screen
+- [x] Both roles render fully, bullets verbatim from `src/data/experience.ts`.
+- [x] Metrics visually emphasized without breaking copy or semantics (screen
       reader reads sentences naturally).
-- [ ] Scroll-reveal stagger works; reduced-motion shows everything statically.
-- [ ] Heading order on the page remains logical (h1 → h2 → h3).
-- [ ] Layout holds at 320 px and 1440 px, both themes.
+- [x] Scroll-reveal stagger works; reduced-motion shows everything statically.
+- [x] Heading order on the page remains logical (h1 → h2 → h3).
+- [x] Layout holds at 320 px and 1440 px, both themes.
 
 ## Out of scope
 
 Other sections; nav (013).
+
+## Implementation notes
+
+- **Metric emphasis uses an explicit `highlights` data shape, not regex.**
+  `ExperienceEntry` gained an optional `highlights?: string[]` — the exact metric
+  literals present in that entry's copy (`['10M+', '55%']` for Footballi;
+  `['1,000+', '~25%', '~10%', '~20%', '40%']` for GityMarket). These aren't new
+  facts, just a pointer at substrings already in the verbatim text. The spec's
+  seven listed metrics are the full set emphasized; `~2 months` / `2026` were left
+  plain to match the spec's explicit list and avoid over-highlighting.
+- **`Highlighted.astro`** (new shared component) does the wrapping: it splits a
+  string on those exact literals (longest-match, left-to-right — no regex over the
+  copy, no `innerHTML`) and emits `<strong class="metric">` around each match with
+  plain text nodes between, which Astro escapes. Reassembling the segments
+  reproduces the source string character-for-character, so screen readers read each
+  sentence unchanged; `<strong>` adds only inline emphasis. Applied to both the
+  blurb and every bullet — the entry's highlight literals are unique enough within
+  the entry that no false matches occur.
+- **Timeline structure**: an `<ol role="list">` of `<li>` entries, each with an
+  `<h3>` "Company — Role", a mono date line using `<time datetime="YYYY-MM">`
+  (parsed from the "Month YYYY" data by a small controlled helper; current role
+  renders a plain "Present"), the italic blurb, and a `<ul>` of bullets with an
+  accent chevron marker. Heading order on the page stays h1 → h2 → h3.
+- **Spine**: one continuous `var(--gradient)` line drawn as `.timeline::before`
+  (violet at top → green at bottom across the whole rail), with a `mask-image`
+  fade so the tail below the last node dissolves instead of cutting off. Nodes are
+  gradient beads with a `box-shadow` ring in `--bg` so the line reads as passing
+  behind them. The spine sits at the left edge on every width (single column
+  throughout); desktop just widens the content indent. Spine top and node top
+  share the same `em` offset (same font base) so they always align — verified node
+  center vs. heading first-line center within ~2–5px at 320 and 1440.
+- **Motion**: entries reveal with a per-index stagger (`data-reveal-delay`
+  160/260) via the 002 primitive; the node under the cursor scales up and gains
+  the `--glow` shadow. Both are fully gated by `prefers-reduced-motion: reduce`
+  (reveal handled globally in 002; the node hover accent reset in this component).
+- Verified via Chromium at 320 and 1440 in both themes: 1 `<h1>`, h2/h3 order
+  correct, all seven metrics wrapped and colored `--accent` (700 weight,
+  `tabular-nums`), zero horizontal overflow, and the reduced-motion state renders
+  both entries statically with the spine fully drawn.
