@@ -1,0 +1,215 @@
+---
+// Experience — spec 005. Animated vertical timeline rendered from
+// `src/data/experience.ts`; no resume facts live in this component.
+import { experience } from '../../data/experience';
+import Highlighted from '../Highlighted.astro';
+
+// "Month YYYY" -> ISO "YYYY-MM" for the <time datetime> attribute. Operates
+// only on our own controlled date strings; falls back to no attribute if a
+// value doesn't parse, so the human-readable text is always shown regardless.
+const MONTHS: Record<string, string> = {
+  january: '01',
+  february: '02',
+  march: '03',
+  april: '04',
+  may: '05',
+  june: '06',
+  july: '07',
+  august: '08',
+  september: '09',
+  october: '10',
+  november: '11',
+  december: '12',
+};
+
+function isoMonth(value: string): string | undefined {
+  const match = value.trim().match(/^([A-Za-z]+)\s+(\d{4})$/);
+  if (!match) return undefined;
+  const month = MONTHS[match[1].toLowerCase()];
+  return month ? `${match[2]}-${month}` : undefined;
+}
+---
+
+<section id="experience" class="section experience">
+  <div class="container">
+    <p class="section-label reveal">// experience</p>
+    <h2 class="experience-title reveal" data-reveal-delay="80">Where I've worked</h2>
+
+    <ol class="timeline" role="list">
+      {
+        experience.map((entry, index) => (
+          <li class="timeline-item reveal" data-reveal-delay={160 + index * 100}>
+            <span class="timeline-node" aria-hidden="true" />
+            <div class="timeline-content">
+              <h3 class="timeline-heading">
+                <span class="company">{entry.company}</span>
+                <span class="heading-sep" aria-hidden="true">
+                  {' — '}
+                </span>
+                <span class="role">{entry.role}</span>
+              </h3>
+
+              <p class="timeline-dates">
+                <time datetime={isoMonth(entry.start)}>{entry.start}</time>
+                <span aria-hidden="true"> – </span>
+                {entry.end ? (
+                  <time datetime={isoMonth(entry.end)}>{entry.end}</time>
+                ) : (
+                  <span>Present</span>
+                )}
+              </p>
+
+              <p class="timeline-blurb">
+                <Highlighted text={entry.blurb} highlights={entry.highlights} />
+              </p>
+
+              <ul class="timeline-bullets">
+                {entry.bullets.map((bullet) => (
+                  <li>
+                    <Highlighted text={bullet} highlights={entry.highlights} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .experience-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .timeline {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-7);
+    padding: 0;
+  }
+
+  /* Continuous gradient spine running down the rail; dissolves at the bottom so
+     the tail below the last node doesn't cut off abruptly. */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    bottom: 0;
+    left: 7px;
+    width: 2px;
+    transform: translateX(-50%);
+    background: var(--gradient);
+    -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent);
+    mask-image: linear-gradient(180deg, #000 82%, transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-inline-start: var(--space-6);
+    padding-block-end: var(--space-7);
+  }
+
+  .timeline-item:last-child {
+    padding-block-end: 0;
+  }
+
+  /* A bead sitting on the spine. The solid ring in --bg masks the line behind
+     it so it reads as a distinct node. */
+  .timeline-node {
+    position: absolute;
+    top: 0.65em;
+    left: 7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gradient);
+    box-shadow: 0 0 0 4px var(--bg);
+    transform: translate(-50%, -50%);
+    transition:
+      transform var(--transition),
+      box-shadow var(--transition);
+  }
+
+  .timeline-item:hover .timeline-node {
+    transform: translate(-50%, -50%) scale(1.25);
+    box-shadow:
+      0 0 0 4px var(--bg),
+      var(--glow);
+  }
+
+  .timeline-heading {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+  }
+
+  .timeline-heading .company {
+    color: var(--text);
+  }
+
+  .timeline-heading .heading-sep {
+    color: var(--text-2);
+    font-weight: 400;
+  }
+
+  .timeline-heading .role {
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  .timeline-dates {
+    margin-block-start: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--text-2);
+  }
+
+  .timeline-blurb {
+    margin-block-start: var(--space-3);
+    max-width: 60ch;
+    font-style: italic;
+    color: var(--text-2);
+  }
+
+  .timeline-bullets {
+    margin-block-start: var(--space-4);
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 68ch;
+  }
+
+  .timeline-bullets li {
+    position: relative;
+    padding-inline-start: var(--space-5);
+  }
+
+  /* Accent chevron marker instead of a plain disc. */
+  .timeline-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent);
+    line-height: inherit;
+  }
+
+  @media (min-width: 768px) {
+    .timeline-item {
+      padding-inline-start: var(--space-7);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timeline-node,
+    .timeline-item:hover .timeline-node {
+      transform: translate(-50%, -50%);
+      transition: none;
+      box-shadow: 0 0 0 4px var(--bg);
+    }
+  }
+</style>

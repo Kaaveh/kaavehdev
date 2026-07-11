@@ -1,0 +1,63 @@
+---
+// Highlighted — spec 005. Renders `text` with the exact substrings listed in
+// `highlights` wrapped in <strong class="metric"> for accent emphasis.
+//
+// Safe by construction: it splits the string on *exact literal* matches (no
+// regex over arbitrary input, no innerHTML) and emits ordinary text nodes that
+// Astro escapes. Reassembling the segments reproduces `text` character-for-
+// character, so a screen reader reads the sentence unchanged.
+interface Segment {
+  text: string;
+  metric: boolean;
+}
+
+function splitHighlights(text: string, highlights: string[]): Segment[] {
+  const terms = highlights.filter((h) => h.length > 0);
+  if (terms.length === 0) return [{ text, metric: false }];
+
+  const segments: Segment[] = [];
+  let cursor = 0; // start of the current run of plain text
+  let i = 0;
+
+  while (i < text.length) {
+    // Longest term that begins exactly at position i, if any.
+    let match: string | undefined;
+    for (const term of terms) {
+      if (text.startsWith(term, i) && (!match || term.length > match.length)) {
+        match = term;
+      }
+    }
+    if (match) {
+      if (cursor < i) segments.push({ text: text.slice(cursor, i), metric: false });
+      segments.push({ text: match, metric: true });
+      i += match.length;
+      cursor = i;
+    } else {
+      i++;
+    }
+  }
+  if (cursor < text.length) segments.push({ text: text.slice(cursor), metric: false });
+  return segments;
+}
+
+interface Props {
+  text: string;
+  highlights?: string[];
+}
+
+const { text, highlights = [] } = Astro.props;
+const segments = splitHighlights(text, highlights);
+---
+{
+  segments.map((segment) =>
+    segment.metric ? <strong class="metric">{segment.text}</strong> : segment.text,
+  )
+}
+
+<style>
+  .metric {
+    color: var(--accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+</style>

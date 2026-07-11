@@ -37,6 +37,12 @@ export interface ExperienceEntry {
   blurb: string;
   /** Resume bullets, verbatim. */
   bullets: string[];
+  /**
+   * Exact metric substrings within `blurb`/`bullets` to visually emphasize
+   * (e.g. "55%", "10M+"). Each is a literal already present in the copy — never
+   * a new fact — matched by exact substring so emphasis can't corrupt the text.
+   */
+  highlights?: string[];
 }
 
 /** A titled group of skills (006). Rendered in array order. */
