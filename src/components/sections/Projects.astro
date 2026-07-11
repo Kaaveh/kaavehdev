@@ -1,0 +1,273 @@
+---
+// Projects — spec 007. Open-source showcase rendered from
+// `src/data/projects.ts`. Star counts are resolved at BUILD TIME here in the
+// frontmatter (never client-side): the GitHub API is queried per repo behind a
+// short abort timeout, and any failure or a live count below the committed
+// `fallbackStars` falls back to that committed value — a dead/slow/rate-limited
+// GitHub API can never fail or hang `npm run build`.
+import { projects } from '../../data/projects';
+import type { Project } from '../../data/types';
+
+/** Display ≥1000 as "1.2k"; smaller counts render verbatim. */
+function formatStars(count: number): string {
+  if (count >= 1000) {
+    return `${(count / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  }
+  return String(count);
+}
+
+interface ResolvedProject extends Project {
+  stars: number;
+  /** True when the count came from a live API response (build-log note only). */
+  live: boolean;
+}
+
+/**
+ * Resolve one project's star count at build time. Never throws: on any
+ * non-200, network error, timeout, or a live count below `fallbackStars`,
+ * returns the committed fallback.
+ */
+async function resolveStars(project: Project): Promise<ResolvedProject> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+  try {
+    const res = await fetch(`https://api.github.com/repos/${project.repo}`, {
+      signal: controller.signal,
+      headers: {
+        Accept: 'application/vnd.github+json',
+        'User-Agent': 'kaaveh.dev-build',
+      },
+    });
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const data = (await res.json()) as { stargazers_count?: unknown };
+    const raw =
+      typeof data.stargazers_count === 'number' ? data.stargazers_count : 0;
+    // Never regress below the committed count (stale mirrors, partial data).
+    if (raw > project.fallbackStars) {
+      return { ...project, stars: raw, live: true };
+    }
+    return { ...project, stars: project.fallbackStars, live: false };
+  } catch {
+    return { ...project, stars: project.fallbackStars, live: false };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const resolved = await Promise.all(projects.map(resolveStars));
+
+// Build-log note so live-vs-fallback is verifiable (acceptance criteria).
+for (const p of resolved) {
+  console.log(
+    `[projects] ${p.name}: ${p.stars}★ (${p.live ? 'live' : 'fallback'})`,
+  );
+}
+---
+
+<section id="projects" class="section projects">
+  <div class="container">
+    <p class="section-label reveal">// projects</p>
+    <h2 class="projects-title reveal" data-reveal-delay="80">Open source</h2>
+
+    <ul class="projects-grid" role="list">
+      {
+        resolved.map((project, index) => (
+          <li
+            class:list={['project-item reveal', { featured: index === 0 }]}
+            data-reveal-delay={140 + index * 80}
+          >
+            <a
+              class="project-card hover-lift"
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="project-head">
+                <h3 class="project-name">{project.name}</h3>
+                <span class="star-badge" aria-label={`${project.stars} GitHub stars`}>
+                  <span class="star-icon" aria-hidden="true">
+                    ★
+                  </span>
+                  {formatStars(project.stars)}
+                </span>
+              </div>
+
+              <p class="project-desc">{project.description}</p>
+
+              <div class="project-foot">
+                <span class="lang-chip">{project.language}</span>
+                <span class="project-link" aria-hidden="true">
+                  GitHub ↗
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="projects-more reveal">
+      <a class="more-link" href="https://github.com/Kaaveh" target="_blank" rel="noopener noreferrer">
+        More on GitHub →
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .projects-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .projects-grid {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-7);
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+
+  /* Two-up from tablet; the flagship (ComposeNews) leads full-width. */
+  @media (min-width: 768px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .project-item.featured {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .project-item {
+    display: flex;
+  }
+
+  /* The whole card is a single real link — no nested/duplicated anchors. */
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: inherit;
+    text-decoration: none;
+    /* --border already present at rest, so hover only repaints it — no shift. */
+    transition:
+      transform var(--transition),
+      box-shadow var(--transition),
+      border-color var(--transition);
+  }
+
+  .project-card:hover,
+  .project-card:focus-visible {
+    border-color: var(--accent);
+  }
+
+  .project-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .project-name {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+    color: var(--text);
+  }
+
+  /* The proof point of the section — accent, mono, prominent. */
+  .star-badge {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .star-icon {
+    font-size: 1em;
+    line-height: 1;
+  }
+
+  .project-desc {
+    margin-block-start: var(--space-4);
+    max-width: 60ch;
+    color: var(--text-2);
+  }
+
+  .project-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    /* Pin the footer to the card bottom so unequal descriptions stay aligned. */
+    margin-block-start: auto;
+    padding-block-start: var(--space-5);
+  }
+
+  .lang-chip {
+    padding: var(--space-1) var(--space-3);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-2);
+  }
+
+  .project-link {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: var(--text-2);
+    transition: color var(--transition);
+  }
+
+  .project-card:hover .project-link,
+  .project-card:focus-visible .project-link {
+    color: var(--accent);
+  }
+
+  .projects-more {
+    margin-block-start: var(--space-6);
+  }
+
+  /* Ghost link: quiet by default, accent on interaction. */
+  .more-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .more-link:hover,
+  .more-link:focus-visible {
+    color: var(--accent);
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .project-link,
+    .more-link {
+      transition: none;
+    }
+
+    .more-link:hover,
+    .more-link:focus-visible {
+      transform: none;
+    }
+  }
+</style>
