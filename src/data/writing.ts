@@ -1,10 +1,12 @@
 import type { Article } from './types';
 
 /**
- * Known article titles. URLs unverified unless present below.
+ * Published article titles. Kaaveh confirmed the count is 8 (2026-07-11).
+ * Only articles with a verified `url` render as links; the rest show as plain
+ * text (title + source) — never a guessed URL (see specs/000-overview.md).
  *
- * TODO(Kaaveh): confirm the canonical list of 7 articles + URLs with the user
- * before the Writing section (008) ships them.
+ * TODO(Kaaveh): supply canonical Medium URLs for the un-linked titles so they
+ * can become links too.
  */
 export const articles: Article[] = [
   {

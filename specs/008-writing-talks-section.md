@@ -48,16 +48,63 @@ covering articles, talks, the Droidcon course, and mentoring.
 
 ## Acceptance criteria
 
-- [ ] Every displayed link was confirmed by Kaaveh or verified in data; no
+- [x] Every displayed link was confirmed by Kaaveh or verified in data; no
       guessed URLs (grep for TODO leakage into rendered output).
-- [ ] Unlinked items render as plain text without link affordances.
-- [ ] Articles/talks/course/mentoring all present; Medium profile link works.
-- [ ] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
+- [x] Unlinked items render as plain text without link affordances.
+- [x] Articles/talks/course/mentoring all present; Medium profile link works.
+- [x] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
       themes.
-- [ ] `src/data/writing.ts` / `talks.ts` updated with whatever Kaaveh confirmed
+- [x] `src/data/writing.ts` / `talks.ts` updated with whatever Kaaveh confirmed
       (data updated, not component-hardcoded).
 
 ## Out of scope
 
 Auto-fetching Medium RSS at build time (Medium blocks anonymous scraping
 unreliably — keep the list curated); article thumbnails.
+
+## Implementation notes
+
+- **What Kaaveh confirmed (2026-07-11)** via the spec's Requirement-0 questions:
+  - *Articles*: the canonical count is **8** (resume was updated from 7 → 8), so
+    all eight titles in `writing.ts` render. No new URLs were supplied, so only
+    the one verified article (ProAndroidDev) links out; the other seven render as
+    plain text. `writing.ts`'s header comment was updated accordingly (the "7"
+    TODO is resolved; a TODO remains only for the still-missing Medium URLs).
+  - *Talks*: the three LogCat talk titles + years were provided and written into
+    `talks.ts` — "A Refactoring Odyssey: An Introduction to SQLDelight" (2025),
+    "Mindful Developer" (2025), "Cognitive Debt: Staying Sharp When AI Writes
+    Most of Your Code" (2026). No recording URLs were given, so talks render as
+    plain text (title + `LogCat conference · year`), not links.
+  - *Course*: link the **verified droidcon Academy instructor page**
+    (`academy.droidcon.com/kaaveh-mohamedi`) — no course-specific URL exists.
+  - *IEEE note*: render it **only in Education (010)**. `Writing.astro` therefore
+    does not render `talks.ts`'s `teaching` export, and the Mentoring group is
+    just the `20+` stat. (The `teaching` string stays in `talks.ts` unused by 008
+    so 010 can consume it — noted here to satisfy the "pick one and note it" rule.)
+- **`Writing.astro`** renders `writing.ts` + `talks.ts` unchanged (no hardcoded
+  facts). Header reuses the 005/006/007 pattern (`// writing` `.section-label`
+  kicker + `<h2>` "Writing & talks"), composed on `/` after `Projects`
+  (anchor `#writing`). Three `<section>` groups, each `aria-labelledby` its
+  h3-level heading (`Articles`, `Talks & teaching`, `Mentoring`), each with the
+  Skills-style gradient bullet marker.
+- **Link vs plain-text differentiation** (the spec's named trap): only items with
+  a real URL become an `<a class="article-link|talk-link">` — accent-coloured
+  title + an `↗` arrow-out icon + hover/focus nudge. Un-linked items are bare
+  `<span>`s with the default text colour and zero affordance. Verified in the
+  built HTML: exactly 1 `article-link` (ProAndroidDev) and 1 `talk-link` (course).
+- **Mentoring** uses a bold stat treatment — a large gradient-clipped `20+`
+  (`background-clip: text`, from `mentoring.stat`) over an `engineers mentored`
+  mono label, echoing the metric accent used elsewhere for cross-section cohesion.
+- **Layout**: single column below 900 px; at ≥900 px a `grid-template-areas`
+  layout puts the tall Articles list in a left column spanning both rows, with
+  Talks & teaching and Mentoring stacked on the right (`align-items: start`).
+- **Motion**: the label, `<h2>`, and each group are `.reveal` with a
+  `data-reveal-delay` stagger (0 / 80 / 140 / 200 / 260 ms) via the shared 002
+  script; hover/focus transforms are neutralised under
+  `prefers-reduced-motion: reduce`. The section ships **zero** client JS of its
+  own (only the shared reveal script runs).
+- **Verified**: `npm run build` passes (`astro check` 0/0/0). Drove the built
+  page in the pre-installed Chromium at 320 px and 1440 px in both themes and
+  under reduced motion — no horizontal overflow at any width (`scrollWidth ==
+  clientWidth`), all groups/links/stat present, and no `TODO` string leaked into
+  the rendered HTML.
