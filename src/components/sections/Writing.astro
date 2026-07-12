@@ -1,0 +1,322 @@
+---
+// Writing & Talks — spec 008. Community-contribution section rendered from
+// `src/data/writing.ts` and `src/data/talks.ts`; no resume facts live in this
+// component. Three visually distinct groups: Articles, Talks & teaching, and
+// Mentoring. Only items with a verified URL render as links — un-linked items
+// are plain text with no click affordance (never a guessed URL; see
+// specs/000-overview.md). The IEEE Android-teaching note is intentionally NOT
+// rendered here — it lives once site-wide in Education (spec 010).
+import { articles, mediumProfileUrl } from '../../data/writing';
+import { talks, course, mentoring } from '../../data/talks';
+
+// The course links to a course-specific URL when known, otherwise the verified
+// droidcon Academy instructor page (per spec 008 + Kaaveh's confirmation).
+const courseUrl = course.url ?? course.instructorUrl;
+const courseTitle = course.title ?? `${course.topic} ${course.format}`;
+---
+
+<section id="writing" class="section writing">
+  <div class="container">
+    <p class="section-label reveal">// writing</p>
+    <h2 class="writing-title reveal" data-reveal-delay="80">Writing &amp; talks</h2>
+
+    <div class="writing-groups">
+      <!-- Articles -->
+      <section class="group group--articles reveal" data-reveal-delay="140" aria-labelledby="writing-articles">
+        <h3 id="writing-articles" class="group-title">Articles</h3>
+        <ul class="article-list" role="list">
+          {
+            articles.map((article) => (
+              <li class="article">
+                {article.url ? (
+                  <a
+                    class="article-link"
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span class="article-title">{article.title}</span>
+                    <span class="ext-icon" aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                ) : (
+                  <span class="article-title">{article.title}</span>
+                )}
+                <span class="article-meta">
+                  {article.source}
+                  {article.note ? ` · ${article.note}` : ''}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="group-more">
+          <a
+            class="more-link"
+            href={mediumProfileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            All articles on Medium →
+          </a>
+        </p>
+      </section>
+
+      <!-- Talks & teaching -->
+      <section class="group group--talks reveal" data-reveal-delay="200" aria-labelledby="writing-talks">
+        <h3 id="writing-talks" class="group-title">Talks &amp; teaching</h3>
+        <ul class="talk-list" role="list">
+          {
+            talks.map((talk) => (
+              <li class="talk">
+                <span class="talk-title">{talk.title ?? talk.event}</span>
+                <span class="talk-meta">
+                  {talk.event}
+                  {talk.year ? ` · ${talk.year}` : ''}
+                </span>
+              </li>
+            ))
+          }
+          <li class="talk talk--course">
+            <a
+              class="talk-link"
+              href={courseUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="talk-title">{courseTitle}</span>
+              <span class="ext-icon" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+            <span class="talk-meta">{course.publisherNote}</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Mentoring -->
+      <section class="group group--mentoring reveal" data-reveal-delay="260" aria-labelledby="writing-mentoring">
+        <h3 id="writing-mentoring" class="group-title">Mentoring</h3>
+        <div class="mentoring-stat">
+          <span class="mentoring-figure">{mentoring.stat}</span>
+          <span class="mentoring-label">engineers mentored</span>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<style>
+  .writing-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .writing-groups {
+    margin-block-start: var(--space-7);
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+
+  /* Desktop: a tall Articles column on the left; Talks and Mentoring stack on
+     the right. align-items:start keeps the two columns top-aligned when the
+     article list is taller than the right stack. */
+  @media (min-width: 900px) {
+    .writing-groups {
+      grid-template-columns: 1.2fr 1fr;
+      column-gap: var(--space-7);
+      align-items: start;
+      grid-template-areas:
+        'articles talks'
+        'articles mentoring';
+    }
+
+    .group--articles {
+      grid-area: articles;
+    }
+    .group--talks {
+      grid-area: talks;
+    }
+    .group--mentoring {
+      grid-area: mentoring;
+    }
+  }
+
+  .group-title {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* Accent group marker — echoes the Skills (006) group heading. */
+  .group-title::before {
+    content: '';
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--gradient);
+  }
+
+  /* --- Articles & talks share the item layout --- */
+  .article-list,
+  .talk-list {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-5);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .article,
+  .talk {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .article-title,
+  .talk-title {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.35;
+  }
+
+  .article-meta,
+  .talk-meta {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: var(--text-2);
+  }
+
+  /* Linked items: accent title + arrow-out icon, hover feedback. Plain items
+     (no <a>) keep the default text color and no affordance whatsoever. */
+  .article-link,
+  .talk-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    width: fit-content;
+    text-decoration: none;
+    color: var(--accent);
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .article-link .article-title,
+  .talk-link .talk-title {
+    color: var(--accent);
+    transition: color var(--transition);
+  }
+
+  .ext-icon {
+    flex: none;
+    font-size: 0.875em;
+    transition: transform var(--transition);
+  }
+
+  .article-link:hover,
+  .article-link:focus-visible,
+  .talk-link:hover,
+  .talk-link:focus-visible {
+    transform: translateX(2px);
+  }
+
+  .article-link:hover .ext-icon,
+  .article-link:focus-visible .ext-icon,
+  .talk-link:hover .ext-icon,
+  .talk-link:focus-visible .ext-icon {
+    transform: translate(2px, -2px);
+  }
+
+  .group-more {
+    margin-block-start: var(--space-5);
+  }
+
+  /* Ghost link — matches the Projects (007) "More on GitHub →" treatment. */
+  .more-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .more-link:hover,
+  .more-link:focus-visible {
+    color: var(--accent);
+    transform: translateX(2px);
+  }
+
+  /* --- Mentoring: bold stat treatment, echoing the metric accent elsewhere --- */
+  .mentoring-stat {
+    margin-block-start: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-5) var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .mentoring-figure {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2.75rem, 2rem + 3vw, 4rem);
+    line-height: 1;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Fallback for engines that ignore background-clip:text. */
+    -webkit-text-fill-color: transparent;
+    width: fit-content;
+  }
+
+  .mentoring-label {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    letter-spacing: 0.02em;
+    color: var(--text-2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-link,
+    .talk-link,
+    .ext-icon,
+    .more-link {
+      transition: none;
+    }
+
+    .article-link:hover,
+    .article-link:focus-visible,
+    .talk-link:hover,
+    .talk-link:focus-visible,
+    .more-link:hover,
+    .more-link:focus-visible {
+      transform: none;
+    }
+
+    .article-link:hover .ext-icon,
+    .article-link:focus-visible .ext-icon,
+    .talk-link:hover .ext-icon,
+    .talk-link:focus-visible .ext-icon {
+      transform: none;
+    }
+  }
+</style>

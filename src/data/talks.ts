@@ -1,11 +1,26 @@
 import type { Course, Mentoring, Talk } from './types';
 
-/** Three technical talks at the LogCat conference. */
+/**
+ * Three technical talks at the LogCat conference. Titles/years confirmed by
+ * Kaaveh (2026-07-11); no public recording URLs provided, so they render as
+ * plain text (title + event + year), not links.
+ */
 export const talks: Talk[] = [
-  // TODO(Kaaveh): titles, years, and links for the three LogCat talks.
-  { event: 'LogCat conference' },
-  { event: 'LogCat conference' },
-  { event: 'LogCat conference' },
+  {
+    event: 'LogCat conference',
+    title: 'A Refactoring Odyssey: An Introduction to SQLDelight',
+    year: '2025',
+  },
+  {
+    event: 'LogCat conference',
+    title: 'Mindful Developer',
+    year: '2025',
+  },
+  {
+    event: 'LogCat conference',
+    title: 'Cognitive Debt: Staying Sharp When AI Writes Most of Your Code',
+    year: '2026',
+  },
 ];
 
 export const course: Course = {
@@ -16,7 +31,9 @@ export const course: Course = {
     'droidcon Academy — the global Android developer conference organization ' +
     'partnered with Google, Meta, and Amazon',
   instructorUrl: 'https://academy.droidcon.com/kaaveh-mohamedi',
-  // TODO(Kaaveh): exact course title and URL.
+  // Title + URL confirmed by Kaaveh (2026-07-11).
+  title: 'Mastering SQLDelight Database in Android with Jetpack Compose',
+  url: 'https://academy.droidcon.com/course/mastering-sqldelight-database-android-jetpack-compose',
 };
 
 export const mentoring: Mentoring = {
