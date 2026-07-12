@@ -9,8 +9,7 @@ export const site: SiteInfo = {
     'migrations, modular architecture, and developer productivity. Active ' +
     'contributor to the Android community — 3 conference talks, 7 Medium ' +
     'articles, and open-source projects with 500+ combined stars.',
-  // TODO(Kaaveh): production domain
-  siteUrl: '',
+  siteUrl: 'https://kaavehdev.ir',
   resumePdf: '/resume/Kaaveh_Mohamedi.pdf',
   contacts: [
     { label: 'Email', url: 'mailto:Kaaveh@pm.me' },

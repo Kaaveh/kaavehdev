@@ -3,8 +3,9 @@
 ## Context
 
 The site is Kaaveh's professional front door; it must unfurl well in link
-previews (recruiters share links) and index cleanly. Blocker to resolve first:
-the production URL is `TODO(Kaaveh)` (see 000/003).
+previews (recruiters share links) and index cleanly. The production URL is now
+confirmed: `https://kaavehdev.ir` (apex canonical; `cv.kaavehdev.ir` also serves).
+It is already set in `src/data/site.ts` `siteUrl` and `astro.config.mjs` `site`.
 
 ## Goal
 
@@ -18,10 +19,9 @@ identity).
 
 ## Requirements
 
-0. **First action**: ask Kaaveh for the production domain (worker is `kaavehdev`;
-   likely a custom domain). Set it in `src/data/site.ts` `siteUrl` **and**
-   `astro.config.mjs` `site`. If he has no domain yet, use the `*.workers.dev`
-   URL he confirms, and leave a `TODO(Kaaveh)` to swap later.
+0. **Production domain** (already resolved): `https://kaavehdev.ir`, set in
+   `src/data/site.ts` `siteUrl` and `astro.config.mjs` `site`. Derive all
+   canonical/OG URLs from `siteUrl`.
 1. **Per-page meta** via `Base.astro` props (extend as needed): unique
    `<title>` and `<meta name="description">` for `/` (name — Senior Android
    Engineer, description distilled from the summary in `site.ts`) and `/beyond`;

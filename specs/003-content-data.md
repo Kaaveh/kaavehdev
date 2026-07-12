@@ -179,3 +179,11 @@ Philosophy · Life coaching · Cycling · Meditation · Martial arts · Mountain
 
 Rendering anything (004+). Asking Kaaveh for every TODO now — each section spec
 resolves its own TODOs when it ships.
+
+## Implementation notes
+
+- 2026-07-12: `siteUrl` was originally left as an empty string with a
+  `TODO(Kaaveh)` comment (per the `site.ts` spec above). The production domain is
+  now confirmed as `https://kaavehdev.ir`, so `siteUrl` was populated with that
+  value (mirrored in `astro.config.mjs` `site`). The apex is canonical; the
+  `cv.kaavehdev.ir` subdomain also serves the site.
