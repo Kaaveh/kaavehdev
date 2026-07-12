@@ -1,4 +1,4 @@
-# Specs Roadmap — kaaveh.dev
+# Specs Roadmap — kaavehdev.ir
 
 How to work on this project: see `CLAUDE.md` at the repo root. Shared context for
 every spec: [`000-overview.md`](./000-overview.md).

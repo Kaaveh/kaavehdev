@@ -1,8 +1,9 @@
-# kaaveh.dev — Resume & Personal Brand Hub
+# kaavehdev.ir — Resume & Personal Brand Hub
 
 Personal website of **Kaaveh Mohamedi** (Senior Android Engineer): an online resume
 (`/`) plus a "Beyond Code" personal-brand page (`/beyond`). Built with Astro (static
-output), deployed as static assets on Cloudflare Workers via Wrangler.
+output), deployed as static assets on Cloudflare Workers via Wrangler. Live at
+**https://kaavehdev.ir** (the `cv.kaavehdev.ir` subdomain also serves the site).
 
 ## Spec-Driven Development workflow
 

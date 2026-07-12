@@ -113,6 +113,7 @@ cost of readability or performance.
 | YouTube (code) | https://www.youtube.com/@CodeWithKaaveh |
 | Droidcon Academy instructor | https://academy.droidcon.com/kaaveh-mohamedi |
 
-Production site URL: `TODO(Kaaveh)` — confirm the custom domain (repo/worker is
-named `kaavehdev`). Until confirmed, keep the site URL in one config spot
-(`src/data/site.ts`) so it changes in one place.
+Production site URL: `https://kaavehdev.ir` (confirmed 2026-07-12; the
+`cv.kaavehdev.ir` subdomain also serves the site, apex is canonical). Kept in one
+config spot (`src/data/site.ts` `siteUrl`, mirrored in `astro.config.mjs` `site`)
+so it changes in one place.
