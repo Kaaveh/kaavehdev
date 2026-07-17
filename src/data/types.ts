@@ -138,6 +138,13 @@ export interface Channel {
   featured?: boolean;
 }
 
+/** A featured video for the click-to-load facade (009). */
+export interface Video {
+  /** YouTube video id, e.g. the `v=` param in a watch URL. */
+  id: string;
+  title: string;
+}
+
 /** A podcast (012). */
 export interface Podcast {
   name: string;
