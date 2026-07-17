@@ -1,0 +1,301 @@
+---
+// YouTube — spec 009. Featured-channel highlight for Code With Kaaveh,
+// rendered from `src/data/channels.ts` and `src/data/videos.ts`; no resume
+// facts live in this component. Per specs/000-overview.md, no third-party
+// iframes at page load: the video row is a click-to-load facade — only a
+// static thumbnail `<img>` ships until a video's play button is clicked.
+import { channels } from '../../data/channels';
+import { featuredVideos } from '../../data/videos';
+
+const featuredChannel = channels.find((channel) => channel.featured);
+if (!featuredChannel?.url) {
+  throw new Error('YouTube section requires a featured channel with a url');
+}
+---
+
+<section id="youtube" class="section youtube">
+  <div class="container">
+    <p class="section-label reveal">// youtube</p>
+    <h2 class="youtube-title reveal" data-reveal-delay="80">Code With Kaaveh</h2>
+
+    <div class="channel-card reveal hover-lift" data-reveal-delay="140">
+      <svg
+        class="channel-icon"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+        ></path>
+      </svg>
+      <div class="channel-body">
+        <h3 class="channel-name">{featuredChannel.name}</h3>
+        <p class="channel-tagline">{featuredChannel.tagline}</p>
+      </div>
+      <a
+        class="channel-cta"
+        href={featuredChannel.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Watch on YouTube <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    {
+      featuredVideos.length > 0 && (
+        <ul class="video-grid" role="list">
+          {featuredVideos.map((video, index) => (
+            <li class="video-item reveal" data-reveal-delay={200 + index * 80}>
+              <div
+                class="video-frame"
+                data-video-frame
+                data-video-id={video.id}
+                data-video-title={video.title}
+              >
+                <button type="button" class="video-play" aria-label={`Play ${video.title}`}>
+                  <img
+                    class="video-thumb"
+                    src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+                    alt=""
+                    width="480"
+                    height="360"
+                    loading="lazy"
+                  />
+                  <span class="play-icon" aria-hidden="true">
+                    ▶
+                  </span>
+                </button>
+              </div>
+              <p class="video-title">{video.title}</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <!--
+      Cross-link to /beyond#channels — spec 011 (Beyond Code page) is not
+      shipped yet, so the target 404s. Per spec 009 requirement 3: keep this
+      commented out until 011 is done, then uncomment it (see spec 009's
+      Implementation notes).
+    <p class="beyond-link reveal">
+      <a class="more-link" href="/beyond#channels">More channels — beyond code →</a>
+    </p>
+    -->
+  </div>
+</section>
+
+<style>
+  .youtube-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .channel-card {
+    margin-block-start: var(--space-7);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .channel-icon {
+    flex: none;
+    color: var(--accent);
+  }
+
+  .channel-body {
+    flex: 1 1 16rem;
+  }
+
+  .channel-name {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
+    color: var(--text);
+  }
+
+  .channel-tagline {
+    margin-block-start: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+  }
+
+  /* Bold CTA, matching the Hero (004) primary button treatment. */
+  .channel-cta {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: linear-gradient(135deg, #7f52ff, #3ddc84);
+    color: #000;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform var(--transition);
+  }
+
+  .channel-cta:hover,
+  .channel-cta:focus-visible {
+    transform: translateY(-2px);
+  }
+
+  .video-grid {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-6);
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 700px) {
+    .video-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .video-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+  }
+
+  .video-frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .video-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .play-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background: var(--gradient);
+    color: #000;
+    border-radius: 50%;
+    font-size: 1.125rem;
+    /* Optically center the triangle glyph. */
+    padding-inline-start: 0.2rem;
+    transition: transform var(--transition);
+  }
+
+  .video-play:hover .play-icon,
+  .video-play:focus-visible .play-icon {
+    transform: scale(1.08);
+  }
+
+  .video-title {
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    line-height: 1.4;
+  }
+
+  .beyond-link {
+    margin-block-start: var(--space-6);
+  }
+
+  .more-link {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .more-link:hover,
+  .more-link:focus-visible {
+    color: var(--accent);
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .channel-cta,
+    .play-icon,
+    .more-link {
+      transition: none;
+    }
+
+    .channel-cta:hover,
+    .channel-cta:focus-visible,
+    .video-play:hover .play-icon,
+    .video-play:focus-visible .play-icon,
+    .more-link:hover,
+    .more-link:focus-visible {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  // Click-to-load facade: swap the thumbnail/button for a youtube-nocookie
+  // iframe only on click, so no video request fires at page load.
+  const frames = document.querySelectorAll<HTMLElement>('[data-video-frame]');
+
+  frames.forEach((frame) => {
+    const button = frame.querySelector<HTMLButtonElement>('.video-play');
+    button?.addEventListener(
+      'click',
+      () => {
+        const id = frame.dataset.videoId;
+        const title = frame.dataset.videoTitle ?? 'Video';
+        if (!id) return;
+
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
+        iframe.title = title;
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.loading = 'lazy';
+        frame.replaceChildren(iframe);
+      },
+      { once: true },
+    );
+  });
+</script>

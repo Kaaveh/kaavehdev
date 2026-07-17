@@ -45,16 +45,26 @@ are notorious Lighthouse killers.
 
 ## Acceptance criteria
 
-- [ ] Zero iframe/network requests to YouTube at page load (network tab clean);
+- [x] Zero iframe/network requests to YouTube at page load (network tab clean);
       thumbnails only if videos are shown.
-- [ ] If videos present: click loads and plays the right video via
+- [x] If videos present: click loads and plays the right video via
       youtube-nocookie; keyboard-operable buttons with accessible names.
-- [ ] Channel CTA resolves to https://www.youtube.com/@CodeWithKaaveh.
-- [ ] No dead `/beyond` link shipped (per requirement 3).
-- [ ] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
+- [x] Channel CTA resolves to https://www.youtube.com/@CodeWithKaaveh.
+- [x] No dead `/beyond` link shipped (per requirement 3).
+- [x] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
       themes.
 
 ## Out of scope
 
 Other five channels (011), subscriber counts (no reliable anonymous API — skip),
 YouTube Data API integration.
+
+## Implementation notes
+
+- Featured videos (ids + titles) supplied by Kaaveh: `s6VDJv9mD0k`,
+  `-rVPOxuqIEg`, `hjASLkHz-8k` — stored in `src/data/videos.ts`.
+- Spec 011 (`/beyond`) is not shipped yet, so the "More channels — beyond
+  code →" cross-link (requirement 3) is present in
+  `src/components/sections/YouTube.astro` but commented out. **Spec 011 must
+  uncomment it** (the `<p class="beyond-link reveal">…</p>` block, right
+  after the video grid) once `/beyond#channels` exists.
