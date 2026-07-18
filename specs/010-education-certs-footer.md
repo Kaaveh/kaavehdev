@@ -46,14 +46,35 @@ page.
 
 ## Acceptance criteria
 
-- [ ] All education/certificates/languages facts render verbatim from data; the
+- [x] All education/certificates/languages facts render verbatim from data; the
       IEEE note appears exactly once site-wide.
-- [ ] No fabricated credential links; unresolved certs are plain text.
-- [ ] Footer renders on `/` with working contact links, PDF link, and computed
+- [x] No fabricated credential links; unresolved certs are plain text.
+- [x] Footer renders on `/` with working contact links, PDF link, and computed
       year; no dead `/beyond` link if 011 isn't done.
-- [ ] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
+- [x] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
       themes.
 
 ## Out of scope
 
 Nav header (013), the `/beyond` page itself (011).
+
+## Implementation notes
+
+- **Shared contact icons**: Hero (004) had the contact-link SVG paths inlined.
+  Since requirement 3 forbids forking the icon set for the footer, they were
+  extracted to `src/components/icons.ts` (`iconPaths`) and both `Hero.astro`
+  and `Footer.astro` now import from there.
+- **`<footer>` landmark placement**: `Base.astro` wrapped all page content in
+  a single `<main><slot /></main>`. A `<footer>` nested inside `<main>` does
+  not get the `contentinfo` landmark role (per the HTML-AAM footer mapping),
+  so `Base.astro` gained a second, named `footer` slot rendered as a sibling
+  of `<main>` (both direct children of `<body>`). `index.astro` passes
+  `<Footer slot="footer" />`. This is the "Base/page composition" spec 011
+  will reuse for `/beyond`.
+- **Certificates**: credential IDs/URLs remain `TODO(Kaaveh)` in
+  `education.ts`; both certs render as issuer + title plain text per the
+  spec's explicit fallback — not blocked on asking, since the spec already
+  states the fallback behavior.
+- Verified via `npm run build` (0 errors/warnings, `astro check` clean),
+  `npm run build && npx wrangler dev` (200 OK, markup present in served
+  output), and headless-Chromium screenshots at 375px/1440px in both themes.

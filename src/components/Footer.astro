@@ -1,0 +1,172 @@
+---
+// Footer — spec 010. Shared site-wide footer, mounted on `/` here and
+// intended for `/beyond` to reuse once spec 011 ships. Rendered outside
+// Base's <main> (via the "footer" named slot) so it lands as a direct child
+// of <body> and keeps its contentinfo landmark semantics. Contact icons are
+// shared with the Hero (004) via `./icons` — never a forked SVG set. No
+// resume facts live in this component.
+import { site } from '../data/site';
+import { iconPaths } from './icons';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-top">
+      <div class="footer-identity">
+        <p class="footer-name">{site.name}</p>
+        <p class="footer-title">{site.title}</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <ul class="footer-contacts" role="list">
+          {
+            site.contacts.map((contact) => {
+              const iconPath = iconPaths[contact.label];
+              const external = !contact.url.startsWith('mailto:');
+              return (
+                <li>
+                  <a
+                    href={contact.url}
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener' : undefined}
+                  >
+                    {iconPath && (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d={iconPath} />
+                      </svg>
+                    )}
+                    {contact.label}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+        <a class="footer-resume" href={site.resumePdf} download>Download Resume (PDF)</a>
+        <!--
+          Cross-link to /beyond — spec 011 (Beyond Code page) is not shipped
+          yet, so the target 404s. Per spec 010 requirement 3 (same
+          dead-link rule as spec 009): keep this commented out until 011 is
+          done, then uncomment it.
+        <a class="footer-beyond" href="/beyond">Beyond code →</a>
+        -->
+      </nav>
+    </div>
+
+    <p class="footer-copyright">© {year} {site.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+  }
+
+  /* Signature flourish: thin gradient top border, echoing the identity
+     accent used across every section. */
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 2px;
+    background: var(--gradient);
+  }
+
+  .footer-inner {
+    padding-block: var(--space-7);
+  }
+
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 700px) {
+    .footer-top {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-6);
+    }
+  }
+
+  .footer-name {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--text);
+  }
+
+  .footer-title {
+    margin-block-start: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-2);
+  }
+
+  .footer-contacts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .footer-contacts a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .footer-contacts a:hover,
+  .footer-contacts a:focus-visible {
+    color: var(--accent);
+  }
+
+  .footer-resume {
+    display: inline-flex;
+    margin-block-start: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: transform var(--transition);
+  }
+
+  .footer-resume:hover,
+  .footer-resume:focus-visible {
+    transform: translateX(2px);
+  }
+
+  .footer-copyright {
+    margin-block-start: var(--space-6);
+    padding-block-start: var(--space-5);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-contacts a,
+    .footer-resume {
+      transition: none;
+    }
+
+    .footer-resume:hover,
+    .footer-resume:focus-visible {
+      transform: none;
+    }
+  }
+</style>
