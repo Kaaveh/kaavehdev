@@ -20,7 +20,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 007 | [Projects showcase](./007-projects-showcase.md)                 | 002, 003     | ✅ Done        |
 | 008 | [Writing & talks section](./008-writing-talks-section.md)       | 002, 003     | ✅ Done        |
 | 009 | [YouTube — Code With Kaaveh](./009-youtube-code-section.md)     | 002, 003     | ✅ Done        |
-| 010 | [Education, certificates & footer](./010-education-certs-footer.md) | 002, 003 | ⬜ Not started |
+| 010 | [Education, certificates & footer](./010-education-certs-footer.md) | 002, 003 | ✅ Done        |
 | 011 | [Beyond Code page](./011-beyond-code-page.md)                   | 002, 003     | ⬜ Not started |
 | 012 | [Podcasts section](./012-podcasts-section.md)                   | 011          | ⬜ Not started |
 | 013 | [Navigation](./013-navigation.md)                               | 004–012      | ⬜ Not started |
