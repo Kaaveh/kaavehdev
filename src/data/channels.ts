@@ -20,22 +20,22 @@ export const channels: Channel[] = [
   },
   {
     name: 'Cycling with Kaaveh',
-    tagline: 'cycling',
-    // TODO(Kaaveh): url
+    tagline: 'cycling tutorials: gear, nutrition, and riding tips',
+    url: 'https://www.youtube.com/@cyclingwithkaaveh',
   },
   {
     name: 'RunningWithKaaveh',
-    tagline: 'running',
-    // TODO(Kaaveh): url
+    tagline: 'running tutorials: technique, training, and hacks',
+    url: 'https://www.youtube.com/@RunningWithKaaveh',
   },
   {
     name: 'MyImmigration',
-    tagline: 'immigration journey',
-    // TODO(Kaaveh): url
+    tagline: 'my immigration journey',
+    url: 'https://www.youtube.com/@My_Immigration',
   },
   {
     name: 'Übermensch',
     tagline: 'longevity and health',
-    // TODO(Kaaveh): url
+    url: 'https://www.youtube.com/@%C3%9CbermenschFa',
   },
 ];

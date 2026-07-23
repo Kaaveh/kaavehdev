@@ -1,0 +1,141 @@
+---
+// Podcasts — spec 012. Kaaveh's solo podcasts, rendered from
+// `src/data/podcasts.ts`; no facts hardcoded here. Sits after #channels on
+// /beyond and shares the channel-grid rhythm so the two read as siblings.
+// A podcast without a confirmed link renders as a plain, unlinked card.
+import { podcasts } from '../../data/podcasts';
+---
+
+<section id="podcasts" class="section">
+  <div class="container">
+    <p class="section-label reveal">// podcasts</p>
+    <h2 class="section-title reveal" data-reveal-delay="80">On the mic</h2>
+    <p class="section-lead reveal" data-reveal-delay="140">
+      A handful of solo shows — thinking out loud, one episode at a time.
+    </p>
+
+    <ul class="podcast-grid" role="list">
+      {
+        podcasts.map((podcast, index) => (
+          <li class="podcast-tile reveal hover-lift" data-reveal-delay={200 + index * 70}>
+            <svg
+              class="podcast-icon"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zm7 9a1 1 0 0 0-2 0 5 5 0 0 1-10 0 1 1 0 0 0-2 0 7 7 0 0 0 6 6.92V21H8a1 1 0 0 0 0 2h8a1 1 0 0 0 0-2h-3v-3.08A7 7 0 0 0 19 11z" />
+            </svg>
+            <h3 class="podcast-name">{podcast.name}</h3>
+            {podcast.description && <p class="podcast-desc">{podcast.description}</p>}
+            {podcast.url && (
+              <a
+                class="podcast-listen"
+                href={podcast.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {podcast.platform ? `Listen on ${podcast.platform}` : 'Listen'}{' '}
+                <span aria-hidden="true">→</span>
+              </a>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .section-lead {
+    margin-block-start: var(--space-3);
+    max-width: 55ch;
+    color: var(--text-2);
+  }
+
+  /* Mirrors the channel grid above it (011) so the two sections read as
+     siblings: same 1 → 2 → 3 column rhythm, surface, border, radius. */
+  .podcast-grid {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-6);
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .podcast-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .podcast-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .podcast-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .podcast-icon {
+    color: var(--accent);
+  }
+
+  .podcast-name {
+    margin-block-start: var(--space-1);
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+    color: var(--text);
+  }
+
+  .podcast-desc {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-2);
+  }
+
+  .podcast-listen {
+    margin-block-start: var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: transform var(--transition);
+  }
+
+  .podcast-listen:hover,
+  .podcast-listen:focus-visible {
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .podcast-listen {
+      transition: none;
+    }
+
+    .podcast-listen:hover,
+    .podcast-listen:focus-visible {
+      transform: none;
+    }
+  }
+</style>
