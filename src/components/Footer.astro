@@ -45,13 +45,7 @@ const year = new Date().getFullYear();
           }
         </ul>
         <a class="footer-resume" href={site.resumePdf} download>Download Resume (PDF)</a>
-        <!--
-          Cross-link to /beyond — spec 011 (Beyond Code page) is not shipped
-          yet, so the target 404s. Per spec 010 requirement 3 (same
-          dead-link rule as spec 009): keep this commented out until 011 is
-          done, then uncomment it.
         <a class="footer-beyond" href="/beyond">Beyond code →</a>
-        -->
       </nav>
     </div>
 
@@ -149,6 +143,25 @@ const year = new Date().getFullYear();
     transform: translateX(2px);
   }
 
+  .footer-beyond {
+    display: flex;
+    width: fit-content;
+    margin-block-start: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .footer-beyond:hover,
+  .footer-beyond:focus-visible {
+    color: var(--accent);
+    transform: translateX(2px);
+  }
+
   .footer-copyright {
     margin-block-start: var(--space-6);
     padding-block-start: var(--space-5);
@@ -160,12 +173,15 @@ const year = new Date().getFullYear();
 
   @media (prefers-reduced-motion: reduce) {
     .footer-contacts a,
-    .footer-resume {
+    .footer-resume,
+    .footer-beyond {
       transition: none;
     }
 
     .footer-resume:hover,
-    .footer-resume:focus-visible {
+    .footer-resume:focus-visible,
+    .footer-beyond:hover,
+    .footer-beyond:focus-visible {
       transform: none;
     }
   }
