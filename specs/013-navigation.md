@@ -64,3 +64,17 @@ composition.
 ## Out of scope
 
 Breadcrumbs, search, i18n switcher.
+
+## Implementation notes
+
+- `Nav.astro` is mounted once in `Base.astro` (before `<main>`), so it lands on
+  both pages automatically — no per-page composition needed. It reads
+  `Astro.url.pathname` to set `aria-current="page"` on the Beyond Code link.
+- The ThemeToggle sits in the always-visible top bar (next to the hamburger on
+  mobile) rather than inside the mobile overlay, so it stays a single instance
+  and its 002 script keeps working unchanged.
+- Scrolled state uses a 1px top sentinel + IntersectionObserver; scroll-spy
+  reuses the same observer pattern on the section elements (home only — the
+  target sections don't exist on `/beyond`, so the observer no-ops there).
+- Mobile overlay uses `visibility` (not `hidden`) so it can transition while
+  still dropping its links out of the tab order / a11y tree when closed.

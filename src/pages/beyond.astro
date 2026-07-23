@@ -4,7 +4,6 @@
 // and `src/data/channels.ts`; no facts hardcoded here beyond the page intro
 // copy (Kaaveh-approved 2026-07-23). Podcasts (012) slot in after #channels.
 import Base from '../layouts/Base.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
 import Footer from '../components/Footer.astro';
 import Podcasts from '../components/sections/Podcasts.astro';
 import { site } from '../data/site';
@@ -29,10 +28,6 @@ const otherChannels = channels.filter((channel) => !channel.featured);
   title={`Beyond Code — ${site.name}`}
   description={`Beyond the resume — ${site.name}'s philosophy, personal interests, and YouTube channels off the keyboard.`}
 >
-  <div class="toggle-slot">
-    <ThemeToggle />
-  </div>
-
   <section class="page-hero">
     <div class="orb orb-violet" aria-hidden="true"></div>
     <div class="container page-hero-inner">
@@ -104,13 +99,6 @@ const otherChannels = channels.filter((channel) => !channel.featured);
 </Base>
 
 <style>
-  .toggle-slot {
-    position: absolute;
-    top: var(--space-5);
-    right: var(--space-5);
-    z-index: 10;
-  }
-
   /* Page hero — smaller than the home hero (004): one ambient orb, no full
      viewport height, warmer register for the personal side. */
   .page-hero {

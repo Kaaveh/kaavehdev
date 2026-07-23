@@ -4,6 +4,7 @@ import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/tokens.css';
 import '../styles/global.css';
+import Nav from '../components/Nav.astro';
 import headingFontUrl from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 
 interface Props {
@@ -41,6 +42,7 @@ const { title, description } = Astro.props;
     <link rel="preload" href={headingFontUrl} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
+    <Nav />
     <main id="main">
       <slot />
     </main>

@@ -90,6 +90,11 @@ a {
   padding-block: var(--space-8);
 }
 
+/* Anchored sections land below the fixed nav (spec 013). */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
 .section-label {
   font-family: var(--font-mono);
   font-size: 0.875rem;
