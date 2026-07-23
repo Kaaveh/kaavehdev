@@ -43,3 +43,25 @@ grid, anchor `#podcasts`.
 ## Out of scope
 
 Episode lists, RSS integration, embedded players.
+
+## Implementation notes
+
+- **Kaaveh's answers (2026-07-23)**: all five podcasts appear; every one is a
+  **solo creation** (he is the sole host). Listen links + platforms supplied:
+  WonderLand → anchor.fm (Anchor), Journal Club → shows.acast.com (Acast), The
+  Voice of My Books → anchor.fm (Anchor), Mushin → shows.acast.com (Acast),
+  Kapsoul → anchor.fm (Anchor). No one-line descriptions given yet, so cards
+  render name + "Listen on {platform} →" only; `description` stays a
+  `TODO(Kaaveh)` optional field and appears with no code change when supplied.
+- `role: 'host'` is stored in `podcasts.ts` for completeness but not shown on
+  the card — it's identical across all five, so surfacing it would just repeat
+  "host" five times.
+- Section reuses the channel-grid rhythm (same surface/border/radius, 1 → 2 → 3
+  columns, reveal stagger, reduced-motion transform reset) so `#podcasts` reads
+  as a sibling of `#channels`. A generic mic inline SVG is the only artwork; no
+  platform logos hotlinked.
+- **Bonus (resolves spec 011 deferral)**: Kaaveh supplied the four missing
+  YouTube channel URLs in the same message, so `channels.ts` TODOs for Cycling
+  with Kaaveh, RunningWithKaaveh, MyImmigration, and Übermensch are now filled
+  (with his reworded taglines for cycling/running). Those channel cards on
+  `/beyond` now show their "Visit channel →" links.
