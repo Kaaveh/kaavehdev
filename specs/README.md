@@ -23,7 +23,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 010 | [Education, certificates & footer](./010-education-certs-footer.md) | 002, 003 | ✅ Done        |
 | 011 | [Beyond Code page](./011-beyond-code-page.md)                   | 002, 003     | ✅ Done        |
 | 012 | [Podcasts section](./012-podcasts-section.md)                   | 011          | ✅ Done        |
-| 013 | [Navigation](./013-navigation.md)                               | 004–012      | ⬜ Not started |
+| 013 | [Navigation](./013-navigation.md)                               | 004–012      | ✅ Done        |
 | 014 | [SEO & meta](./014-seo-meta.md)                                 | 003          | ⬜ Not started |
 | 015 | [Polish: a11y & performance](./015-polish-a11y-performance.md)  | 001–014      | ⬜ Not started |
 

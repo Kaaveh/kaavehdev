@@ -1,0 +1,401 @@
+---
+// Nav — spec 013. Shared sticky header mounted by Base.astro on every page.
+// Quiet bar over the hero; the drama lives in the mobile overlay. Hosts the
+// ThemeToggle (its temporary per-page placement is removed by this spec).
+// Nav structure (labels/anchors) is site IA, not resume facts, so it lives
+// here rather than in src/data.
+import ThemeToggle from './ThemeToggle.astro';
+
+const links = [
+  { label: 'Experience', href: '/#experience', id: 'experience' },
+  { label: 'Skills', href: '/#skills', id: 'skills' },
+  { label: 'Projects', href: '/#projects', id: 'projects' },
+  { label: 'Writing', href: '/#writing', id: 'writing' },
+  { label: 'YouTube', href: '/#youtube', id: 'youtube' },
+];
+
+const isBeyond = Astro.url.pathname.startsWith('/beyond');
+---
+
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="scroll-sentinel" aria-hidden="true" data-sentinel></div>
+
+<header class="site-header" data-header>
+  <nav class="nav container" aria-label="Main">
+    <a class="wordmark" href="/#top">Kaaveh Mohamedi</a>
+
+    <ul class="nav-links" role="list">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} class="nav-link" data-nav-link data-target={link.id}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a
+          href="/beyond"
+          class="nav-link nav-beyond"
+          aria-current={isBeyond ? 'page' : undefined}
+        >
+          Beyond Code
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-controls">
+      <ThemeToggle />
+      <button
+        type="button"
+        class="hamburger"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+      >
+        <svg class="icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="3" y1="7" x2="21" y2="7"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="17" x2="21" y2="17"></line>
+        </svg>
+        <svg class="icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" data-menu>
+  <ul class="mobile-links" role="list">
+    {
+      links.map((link, i) => (
+        <li class="mobile-item" style={`--i:${i}`}>
+          <a href={link.href} class="mobile-link" data-menu-link>
+            {link.label}
+          </a>
+        </li>
+      ))
+    }
+    <li class="mobile-item" style={`--i:${links.length}`}>
+      <a
+        href="/beyond"
+        class="mobile-link mobile-beyond"
+        data-menu-link
+        aria-current={isBeyond ? 'page' : undefined}
+      >
+        Beyond Code
+      </a>
+    </li>
+  </ul>
+</div>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 300;
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transform: translateY(-150%);
+    transition: transform var(--transition);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .scroll-sentinel {
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: 1px;
+  }
+
+  .site-header {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 200;
+    transition:
+      background-color var(--transition),
+      border-color var(--transition),
+      backdrop-filter var(--transition);
+    border-block-end: 1px solid transparent;
+  }
+
+  .site-header.is-scrolled {
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(12px);
+    border-block-end-color: var(--border);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    padding-block: var(--space-3);
+  }
+
+  .wordmark {
+    flex: 1 0 auto;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .nav-link:hover,
+  .nav-link.is-active,
+  .nav-link[aria-current='page'] {
+    color: var(--accent);
+  }
+
+  .nav-beyond {
+    color: var(--text);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-beyond:hover,
+  .nav-beyond[aria-current='page'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .hamburger {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  .hamburger:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .icon-close {
+    display: none;
+  }
+
+  .hamburger[aria-expanded='true'] .icon-open {
+    display: none;
+  }
+
+  .hamburger[aria-expanded='true'] .icon-close {
+    display: block;
+  }
+
+  /* Mobile overlay — hidden and non-interactive until opened. visibility
+     keeps its links out of the tab order and a11y tree when closed. */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity var(--transition),
+      visibility var(--transition);
+  }
+
+  .mobile-menu.is-open {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .mobile-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-link {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2rem, 1.4rem + 3vw, 3rem);
+    color: var(--text);
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 400ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      color var(--transition);
+    transition-delay: calc(var(--i) * 60ms);
+  }
+
+  .mobile-menu.is-open .mobile-link {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-link:hover,
+  .mobile-link[aria-current='page'] {
+    color: var(--accent);
+  }
+
+  .mobile-beyond {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (max-width: 767px) {
+    .nav-links {
+      display: none;
+    }
+
+    .hamburger {
+      display: grid;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skip-link,
+    .site-header,
+    .mobile-menu {
+      transition: none;
+    }
+
+    .mobile-link {
+      transition: color var(--transition);
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const sentinel = document.querySelector('[data-sentinel]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const navLinks = document.querySelectorAll<HTMLElement>('[data-nav-link]');
+
+  // Scrolled state: header turns translucent once the top sentinel scrolls away.
+  if (header && sentinel && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      header.classList.toggle('is-scrolled', !entry.isIntersecting);
+    }).observe(sentinel);
+  } else {
+    header?.classList.add('is-scrolled');
+  }
+
+  // Scroll-spy (home only — the target sections don't exist on /beyond).
+  const sections = [...navLinks]
+    .map((link) => document.getElementById(link.dataset.target ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length && 'IntersectionObserver' in window) {
+    const spy = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const id = entry.target.id;
+          navLinks.forEach((link) =>
+            link.classList.toggle('is-active', link.dataset.target === id),
+          );
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((section) => spy.observe(section));
+  }
+
+  // Mobile overlay: open/close with focus management + body scroll lock.
+  if (toggle && menu) {
+    const menuLinks = menu.querySelectorAll<HTMLElement>('[data-menu-link]');
+    const first = menuLinks[0];
+    const last = menuLinks[menuLinks.length - 1];
+
+    const openMenu = () => {
+      menu.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      document.body.style.overflow = 'hidden';
+      first?.focus();
+    };
+
+    const closeMenu = () => {
+      menu.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+      document.body.style.overflow = '';
+      toggle.focus();
+    };
+
+    toggle.addEventListener('click', () =>
+      toggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu(),
+    );
+
+    menuLinks.forEach((link) => link.addEventListener('click', closeMenu));
+
+    menu.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeMenu();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      // Focus trap between first and last link.
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    });
+  }
+</script>
