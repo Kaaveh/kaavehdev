@@ -1,0 +1,333 @@
+---
+// Beyond Code — spec 011. The human side: intro, personal interests, and the
+// non-featured YouTube channels. Content renders from `src/data/interests.ts`
+// and `src/data/channels.ts`; no facts hardcoded here beyond the page intro
+// copy (Kaaveh-approved 2026-07-23). Podcasts (012) slot in after #channels.
+import Base from '../layouts/Base.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { interests } from '../data/interests';
+import { channels } from '../data/channels';
+
+// Emoji glyphs keyed by interest label — a matched glyph or a neutral fallback,
+// never a guessed one. Interests without a match still render (label only).
+const interestGlyphs: Record<string, string> = {
+  Philosophy: '🦉',
+  'Life coaching': '🧭',
+  Cycling: '🚴',
+  Meditation: '🧘',
+  'Martial arts': '🥋',
+  Mountaineering: '🏔️',
+};
+
+const otherChannels = channels.filter((channel) => !channel.featured);
+---
+
+<Base
+  title={`Beyond Code — ${site.name}`}
+  description={`Beyond the resume — ${site.name}'s philosophy, personal interests, and YouTube channels off the keyboard.`}
+>
+  <div class="toggle-slot">
+    <ThemeToggle />
+  </div>
+
+  <section class="page-hero">
+    <div class="orb orb-violet" aria-hidden="true"></div>
+    <div class="container page-hero-inner">
+      <h1 class="page-title reveal">Beyond Code</h1>
+      <p class="page-intro reveal" data-reveal-delay="100">
+        The resume is only half the story. Beyond the code I'm a
+        philosopher-engineer — chasing ideas, mountains, and better questions
+        through coaching, cycling, meditation, and martial arts.
+      </p>
+      <p class="page-back reveal" data-reveal-delay="180">
+        <a class="back-link" href="/"><span aria-hidden="true">←</span> Back to the resume</a>
+      </p>
+    </div>
+  </section>
+
+  <section id="interests" class="section">
+    <div class="container">
+      <p class="section-label reveal">// interests</p>
+      <h2 class="section-title reveal" data-reveal-delay="80">Off the keyboard</h2>
+
+      <ul class="interest-grid" role="list">
+        {
+          interests.map((interest, index) => (
+            <li class="interest-tile reveal hover-lift" data-reveal-delay={140 + index * 60}>
+              <span class="interest-glyph" aria-hidden="true">{interestGlyphs[interest] ?? '✦'}</span>
+              <span class="interest-label">{interest}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section id="channels" class="section">
+    <div class="container">
+      <p class="section-label reveal">// channels</p>
+      <h2 class="section-title reveal" data-reveal-delay="80">More on YouTube</h2>
+      <p class="section-lead reveal" data-reveal-delay="140">
+        Beyond <a class="inline-link" href="/#youtube">Code With Kaaveh</a>, a
+        handful of channels for the rest of life.
+      </p>
+
+      <ul class="channel-grid" role="list">
+        {
+          otherChannels.map((channel, index) => (
+            <li class="channel-tile reveal hover-lift" data-reveal-delay={200 + index * 70}>
+              <h3 class="channel-name">{channel.name}</h3>
+              <p class="channel-tagline">{channel.tagline}</p>
+              {channel.url && (
+                <a
+                  class="channel-visit"
+                  href={channel.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit channel <span aria-hidden="true">→</span>
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  .toggle-slot {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    z-index: 10;
+  }
+
+  /* Page hero — smaller than the home hero (004): one ambient orb, no full
+     viewport height, warmer register for the personal side. */
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--space-8) var(--space-7);
+    --orb-violet: rgb(127 82 255 / 0.2);
+  }
+
+  :global([data-theme='light']) .page-hero {
+    --orb-violet: rgb(127 82 255 / 0.12);
+  }
+
+  .page-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-block-start: var(--space-7);
+  }
+
+  .page-title {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .page-intro {
+    max-width: 60ch;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--accent);
+    transform: translateX(-2px);
+  }
+
+  .section-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .section-lead {
+    margin-block-start: var(--space-3);
+    max-width: 55ch;
+    color: var(--text-2);
+  }
+
+  .inline-link {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .inline-link:hover,
+  .inline-link:focus-visible {
+    text-decoration: underline;
+  }
+
+  /* Interests — bold tile row, not links. */
+  .interest-grid {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-6);
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .interest-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .interest-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .interest-glyph {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .interest-label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  /* Channels — card grid; unlinked channels simply carry no visit link. */
+  .channel-grid {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-6);
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .channel-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 960px) {
+    .channel-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .channel-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .channel-name {
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem);
+    color: var(--text);
+  }
+
+  .channel-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-2);
+  }
+
+  .channel-visit {
+    margin-block-start: var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: transform var(--transition);
+  }
+
+  .channel-visit:hover,
+  .channel-visit:focus-visible {
+    transform: translateX(2px);
+  }
+
+  /* Single ambient orb behind the page hero. */
+  .orb {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .orb-violet {
+    width: min(40rem, 110vw);
+    top: -40%;
+    right: -10%;
+    background: radial-gradient(circle, var(--orb-violet), transparent 65%);
+    animation: orb-drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes orb-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(-6%, 8%, 0) scale(1.1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb {
+      animation: none;
+    }
+
+    .back-link,
+    .channel-visit {
+      transition: none;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible,
+    .channel-visit:hover,
+    .channel-visit:focus-visible {
+      transform: none;
+    }
+  }
+</style>
