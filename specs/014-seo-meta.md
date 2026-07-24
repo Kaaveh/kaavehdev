@@ -58,3 +58,27 @@ identity).
 ## Out of scope
 
 Analytics (deliberately none unless Kaaveh asks), multi-locale hreflang, blog RSS.
+
+## Implementation notes
+
+- **Raster assets are committed, not built.** `scripts/generate-brand-assets.mjs`
+  is a one-shot generator (run with `node`, uses `sharp` — an Astro dependency)
+  that writes `public/og.png`, `public/apple-touch-icon.png`, and
+  `public/favicon.ico`. The build never runs it. Rerun only when the mark/OG
+  design changes. The real Space Grotesk / JetBrains Mono are base64-embedded
+  into the OG SVG at render time, so the true letterforms are baked into the PNG.
+- **`favicon.svg`** is hand-authored (not generated) so the `prefers-color-scheme`
+  media query stays in the SVG: a gradient tile + white "K", with a hairline
+  outline added on light chrome.
+- **`favicon.ico`** is a single 32×32 PNG wrapped in a minimal ICO container
+  (PNG-in-ICO) — no new dependency; verified via `file` as a valid icon resource.
+- **Apple/OG "K" gradient** uses `gradientUnits="userSpaceOnUse"`; the default
+  `objectBoundingBox` gives the vertical stem (zero-width bbox) no paint.
+- **JSON-LD `sameAs`** derives from the data layer: `site.contacts` (minus the
+  `mailto:`) + `course.instructorUrl` from `talks.ts` (the droidcon Academy page
+  lives there, not in `site.ts`). All meta/JSON-LD URLs trace to `src/data/`.
+- Base gained a named `head` slot so `/` can inject the `Person` JSON-LD while
+  `/beyond` omits it.
+- Lighthouse SEO is not scored in this session (headless run deferred to spec
+  015); all inputs it checks — title, meta description, canonical, crawlable
+  links, robots.txt, sitemap — are present.

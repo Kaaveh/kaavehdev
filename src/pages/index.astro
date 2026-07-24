@@ -10,12 +10,39 @@ import Writing from '../components/sections/Writing.astro';
 import YouTube from '../components/sections/YouTube.astro';
 import Education from '../components/sections/Education.astro';
 import { site } from '../data/site';
+import { course } from '../data/talks';
+
+const description =
+  'Senior Android Engineer with 7+ years building consumer apps at scale — ' +
+  'Jetpack Compose migrations, modular architecture, and developer productivity.';
+
+// Person schema — verified facts only. sameAs derives from the data layer:
+// the web profiles in site.contacts (drop the mailto:) + the droidcon page.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  jobTitle: 'Senior Android Engineer',
+  url: site.siteUrl,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Yerevan',
+    addressCountry: 'AM',
+  },
+  sameAs: [
+    ...site.contacts.filter((c) => !c.url.startsWith('mailto:')).map((c) => c.url),
+    course.instructorUrl,
+  ],
+};
 ---
 
-<Base
-  title={`${site.name} — ${site.title}`}
-  description={`Personal website of ${site.name}, ${site.title}.`}
->
+<Base title={`${site.name} — ${site.title}`} description={description}>
+  <script
+    type="application/ld+json"
+    slot="head"
+    set:html={JSON.stringify(jsonLd)}
+    is:inline
+  />
   <Hero />
   <Experience />
   <Skills />
