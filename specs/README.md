@@ -25,7 +25,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 012 | [Podcasts section](./012-podcasts-section.md)                   | 011          | ✅ Done        |
 | 013 | [Navigation](./013-navigation.md)                               | 004–012      | ✅ Done        |
 | 014 | [SEO & meta](./014-seo-meta.md)                                 | 003          | ✅ Done        |
-| 015 | [Polish: a11y & performance](./015-polish-a11y-performance.md)  | 001–014      | ⬜ Not started |
+| 015 | [Polish: a11y & performance](./015-polish-a11y-performance.md)  | 001–014      | ✅ Done        |
 
 Recommended order: top to bottom. Specs 004–011 are independent of each other and
 can be done in any order once 002 and 003 are ✅. 014 can slot in any time after
