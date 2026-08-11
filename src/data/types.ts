@@ -51,16 +51,25 @@ export interface SkillGroup {
   skills: string[];
 }
 
-/** An open-source project card (007). */
+/**
+ * A project card (007).
+ *
+ * `repo`/`url`/`fallbackStars` are optional so a project whose source is not
+ * public can still be shown: it renders as a non-clickable card with no star
+ * badge — the same "never a guessed URL" rule spec 008 applies to talks.
+ */
 export interface Project {
   name: string;
-  /** GitHub "owner/name" slug, used for the build-time stars fetch (007). */
-  repo: string;
-  url: string;
+  /** GitHub "owner/name" slug for the build-time stars fetch. Omit if private. */
+  repo?: string;
+  /** Public URL. Omitted when the repo is private — the card renders unlinked. */
+  url?: string;
   description: string;
-  /** Committed star count used when the build-time fetch fails (007). */
-  fallbackStars: number;
+  /** Committed star count used when the build-time fetch fails. Omit if private. */
+  fallbackStars?: number;
   language: string;
+  /** Set when the source is not public: renders a "Private" chip and no link. */
+  isPrivate?: boolean;
   /** True for cards spec 007 may drop if the layout gets crowded. */
   optional?: boolean;
 }

@@ -1,6 +1,8 @@
 ---
-// Projects — spec 007. Open-source showcase rendered from
-// `src/data/projects.ts`. Star counts are resolved at BUILD TIME here in the
+// Projects — spec 007. Project showcase rendered from `src/data/projects.ts`.
+// Cards are open-source by default; a project whose source is private carries
+// no URL in the data and renders unlinked, with no star badge (spec 008's
+// "never a guessed URL" rule). Star counts are resolved at BUILD TIME in the
 // frontmatter (never client-side): the GitHub API is queried per repo behind a
 // short abort timeout, and any failure or a live count below the committed
 // `fallbackStars` falls back to that committed value — a dead/slow/rate-limited
@@ -17,7 +19,8 @@ function formatStars(count: number): string {
 }
 
 interface ResolvedProject extends Project {
-  stars: number;
+  /** null for a project with no public repo — the badge is then omitted. */
+  stars: number | null;
   /** True when the count came from a live API response (build-log note only). */
   live: boolean;
 }
@@ -25,9 +28,14 @@ interface ResolvedProject extends Project {
 /**
  * Resolve one project's star count at build time. Never throws: on any
  * non-200, network error, timeout, or a live count below `fallbackStars`,
- * returns the committed fallback.
+ * returns the committed fallback. A project without a public `repo` resolves
+ * to `null` stars without touching the network.
  */
 async function resolveStars(project: Project): Promise<ResolvedProject> {
+  const fallback = project.fallbackStars;
+  if (!project.repo || fallback === undefined) {
+    return { ...project, stars: null, live: false };
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 5000);
   try {
@@ -43,12 +51,12 @@ async function resolveStars(project: Project): Promise<ResolvedProject> {
     const raw =
       typeof data.stargazers_count === 'number' ? data.stargazers_count : 0;
     // Never regress below the committed count (stale mirrors, partial data).
-    if (raw > project.fallbackStars) {
+    if (raw > fallback) {
       return { ...project, stars: raw, live: true };
     }
-    return { ...project, stars: project.fallbackStars, live: false };
+    return { ...project, stars: fallback, live: false };
   } catch {
-    return { ...project, stars: project.fallbackStars, live: false };
+    return { ...project, stars: fallback, live: false };
   } finally {
     clearTimeout(timer);
   }
@@ -58,51 +66,63 @@ const resolved = await Promise.all(projects.map(resolveStars));
 
 // Build-log note so live-vs-fallback is verifiable (acceptance criteria).
 for (const p of resolved) {
-  console.log(
-    `[projects] ${p.name}: ${p.stars}★ (${p.live ? 'live' : 'fallback'})`,
-  );
+  const source = p.stars === null ? 'no public repo' : p.live ? 'live' : 'fallback';
+  console.log(`[projects] ${p.name}: ${p.stars ?? '—'}★ (${source})`);
 }
 ---
 
 <section id="projects" class="section projects">
   <div class="container">
     <p class="section-label reveal">// projects</p>
-    <h2 class="projects-title reveal" data-reveal-delay="80">Open source</h2>
+    <h2 class="projects-title reveal" data-reveal-delay="80">Projects</h2>
 
     <ul class="projects-grid" role="list">
       {
-        resolved.map((project, index) => (
-          <li
-            class:list={['project-item reveal', { featured: index === 0 }]}
-            data-reveal-delay={140 + index * 80}
-          >
-            <a
-              class="project-card hover-lift"
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
+        resolved.map((project, index) => {
+          // A public project is one real <a>; a private one has no verified URL,
+          // so it renders as a plain <div> with no click affordance at all.
+          const Card = project.url ? 'a' : 'div';
+          const linkProps = project.url
+            ? { href: project.url, target: '_blank', rel: 'noopener noreferrer' }
+            : {};
+
+          return (
+            <li
+              class:list={['project-item reveal', { featured: index === 0 }]}
+              data-reveal-delay={140 + index * 80}
             >
-              <div class="project-head">
-                <h3 class="project-name">{project.name}</h3>
-                <span class="star-badge" aria-label={`${project.stars} GitHub stars`}>
-                  <span class="star-icon" aria-hidden="true">
-                    ★
-                  </span>
-                  {formatStars(project.stars)}
-                </span>
-              </div>
+              <Card
+                class:list={['project-card', { 'hover-lift': !!project.url }]}
+                {...linkProps}
+              >
+                <div class="project-head">
+                  <h3 class="project-name">{project.name}</h3>
+                  {project.stars !== null && (
+                    <span class="star-badge" aria-label={`${project.stars} GitHub stars`}>
+                      <span class="star-icon" aria-hidden="true">
+                        ★
+                      </span>
+                      {formatStars(project.stars)}
+                    </span>
+                  )}
+                </div>
 
-              <p class="project-desc">{project.description}</p>
+                <p class="project-desc">{project.description}</p>
 
-              <div class="project-foot">
-                <span class="lang-chip">{project.language}</span>
-                <span class="project-link" aria-hidden="true">
-                  GitHub ↗
-                </span>
-              </div>
-            </a>
-          </li>
-        ))
+                <div class="project-foot">
+                  <span class="lang-chip">{project.language}</span>
+                  {project.url ? (
+                    <span class="project-link" aria-hidden="true">
+                      GitHub ↗
+                    </span>
+                  ) : (
+                    <span class="project-private">Private repo</span>
+                  )}
+                </div>
+              </Card>
+            </li>
+          );
+        })
       }
     </ul>
 
@@ -144,7 +164,8 @@ for (const p of resolved) {
     display: flex;
   }
 
-  /* The whole card is a single real link — no nested/duplicated anchors. */
+  /* A public card is a single real link — no nested/duplicated anchors. A
+     private one is the same box rendered as a <div>, with no hover affordance. */
   .project-card {
     display: flex;
     flex-direction: column;
@@ -162,8 +183,8 @@ for (const p of resolved) {
       border-color var(--transition);
   }
 
-  .project-card:hover,
-  .project-card:focus-visible {
+  a.project-card:hover,
+  a.project-card:focus-visible {
     border-color: var(--accent);
   }
 
@@ -231,9 +252,18 @@ for (const p of resolved) {
     transition: color var(--transition);
   }
 
-  .project-card:hover .project-link,
-  .project-card:focus-visible .project-link {
+  a.project-card:hover .project-link,
+  a.project-card:focus-visible .project-link {
     color: var(--accent);
+  }
+
+  /* Explains the absent link rather than leaving the card looking broken. */
+  .project-private {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    color: var(--text-2);
+    opacity: 0.75;
   }
 
   .projects-more {
