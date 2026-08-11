@@ -1,9 +1,9 @@
 ---
-// Nav — spec 013. Shared sticky header mounted by Base.astro on every page.
-// Quiet bar over the hero; the drama lives in the mobile overlay. Hosts the
-// ThemeToggle (its temporary per-page placement is removed by this spec).
-// Nav structure (labels/anchors) is site IA, not resume facts, so it lives
-// here rather than in src/data.
+// Nav — spec 013, restyled as Liquid Glass chrome by spec 016. Shared header
+// mounted by Base.astro on every page: a floating glass capsule over the
+// ambient layer, with the drama living in the mobile overlay. Hosts the
+// ThemeToggle. Nav structure (labels/anchors) is site IA, not resume facts, so
+// it lives here rather than in src/data.
 import ThemeToggle from './ThemeToggle.astro';
 
 const links = [
@@ -21,7 +21,7 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
 <div class="scroll-sentinel" aria-hidden="true" data-sentinel></div>
 
 <header class="site-header" data-header>
-  <nav class="nav container" aria-label="Main">
+  <nav class="nav glass" aria-label="Main">
     <a class="wordmark" href="/#top">Kaaveh Mohamedi</a>
 
     <ul class="nav-links" role="list">
@@ -49,7 +49,7 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
       <ThemeToggle />
       <button
         type="button"
-        class="hamburger"
+        class="hamburger glass"
         data-menu-toggle
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -69,7 +69,7 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
   </nav>
 </header>
 
-<div class="mobile-menu" id="mobile-menu" data-menu>
+<div class="mobile-menu glass-strong" id="mobile-menu" data-menu>
   <ul class="mobile-links" role="list">
     {
       links.map((link, i) => (
@@ -122,29 +122,36 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     width: 1px;
   }
 
+  /* The header only reserves the strip the capsule floats in; clicks either
+     side of the capsule belong to the page, not to it. */
   .site-header {
     position: fixed;
-    inset-block-start: 0;
+    inset-block-start: var(--space-3);
     inset-inline: 0;
     z-index: 200;
-    transition:
-      background-color var(--transition),
-      border-color var(--transition),
-      backdrop-filter var(--transition);
-    border-block-end: 1px solid transparent;
-  }
-
-  .site-header.is-scrolled {
-    background: color-mix(in srgb, var(--bg) 80%, transparent);
-    backdrop-filter: blur(12px);
-    border-block-end-color: var(--border);
+    padding-inline: var(--space-3);
+    pointer-events: none;
   }
 
   .nav {
+    pointer-events: auto;
+    max-width: 72rem;
+    margin-inline: auto;
     display: flex;
     align-items: center;
     gap: var(--space-5);
-    padding-block: var(--space-3);
+    padding-block: var(--space-2);
+    padding-inline: var(--space-5) var(--space-2);
+    border-radius: var(--radius-full);
+    /* Glass from scroll 0, so scrolling only deepens the elevation. Never
+       transition backdrop-filter — it repaints everything behind the bar. */
+    transition:
+      box-shadow var(--transition),
+      border-color var(--transition);
+  }
+
+  .site-header.is-scrolled .nav {
+    --glass-shadow: var(--glass-shadow-lifted);
   }
 
   .wordmark {
@@ -184,9 +191,9 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
 
   .nav-beyond {
     color: var(--text);
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-4);
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
   }
 
   .nav-beyond:hover,
@@ -201,16 +208,23 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     gap: var(--space-3);
   }
 
+  /* Circular glass control. Fill/border/specular edge come from .glass, but the
+     blur does not: a backdrop-filtered ancestor (the capsule) is a backdrop
+     root, so a nested blur only re-blurs the capsule's flat fill — a no-op that
+     still costs a pass. Same reasoning in ThemeToggle. */
   .hamburger {
     display: none;
     place-items: center;
     width: 44px;
     height: 44px;
-    background: var(--surface);
     color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
     cursor: pointer;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      color var(--transition),
+      border-color var(--transition);
   }
 
   .hamburger:hover {
@@ -231,14 +245,19 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
   }
 
   /* Mobile overlay — hidden and non-interactive until opened. visibility
-     keeps its links out of the tab order and a11y tree when closed. */
+     keeps its links out of the tab order and a11y tree when closed.
+     A full-viewport glass sheet: one layer, so it can afford a deeper blur
+     than the chrome. Edge/elevation from .glass-strong are dropped — on a
+     full-bleed sheet they only draw a hairline along the viewport. */
   .mobile-menu {
     position: fixed;
     inset: 0;
     z-index: 150;
     display: grid;
     place-items: center;
-    background: var(--bg);
+    --glass-blur: 24px;
+    border: 0;
+    box-shadow: none;
     visibility: hidden;
     opacity: 0;
     transition:
@@ -300,11 +319,22 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     .hamburger {
       display: grid;
     }
+
+    /* The wordmark plus two 44px controls have to fit a 320px-wide capsule. */
+    .nav {
+      gap: var(--space-3);
+      padding-inline: var(--space-4) var(--space-2);
+    }
+
+    .nav-controls {
+      gap: var(--space-2);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .skip-link,
-    .site-header,
+    .nav,
+    .hamburger,
     .mobile-menu {
       transition: none;
     }
@@ -324,7 +354,8 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
   const menu = document.querySelector<HTMLElement>('[data-menu]');
   const navLinks = document.querySelectorAll<HTMLElement>('[data-nav-link]');
 
-  // Scrolled state: header turns translucent once the top sentinel scrolls away.
+  // Scrolled state: the capsule is glass from the start, so passing the top
+  // sentinel only deepens its shadow — it lifts further off the page.
   if (header && sentinel && 'IntersectionObserver' in window) {
     new IntersectionObserver(([entry]) => {
       header.classList.toggle('is-scrolled', !entry.isIntersecting);

@@ -84,6 +84,10 @@ const ogImage = new URL('/og.png', site.siteUrl).href;
     <slot name="head" />
   </head>
   <body>
+    <div class="ambient" aria-hidden="true">
+      <div class="ambient-orb ambient-orb-violet"></div>
+      <div class="ambient-orb ambient-orb-green"></div>
+    </div>
     <Nav />
     <main id="main">
       <slot />
@@ -94,3 +98,59 @@ const ogImage = new URL('/og.png', site.siteUrl).href;
     </script>
   </body>
 </html>
+
+<style>
+  /*
+   * Ambient background — spec 016. Glass only reads as glass when something
+   * colourful sits behind it, so this fixed decorative layer washes --bg with
+   * soft identity-coloured orbs (violet dominant, green secondary). Pure CSS,
+   * no requests, never interactive, and always behind <main>: z-index -1 paints
+   * it above the canvas background and below every in-flow element.
+   * Two orbs, not three, and kept diagonally apart at every viewport: where two
+   * orbs overlap their tints compound, and the light theme has no contrast
+   * budget for that. Deliberately static — see this spec's Implementation notes.
+   */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+
+    --orb-violet: rgb(127 82 255 / 0.14);
+    --orb-green: rgb(61 220 132 / 0.1);
+  }
+
+  /* Light theme runs weaker on violet than the spec's suggested 8–12%: violet
+     is a dark hue on a white page, and --accent (#0b8043) clears 4.5:1 on flat
+     --bg by only 0.35, so a 10% violet wash drops .section-label to 4.21:1.
+     Green is a light hue and costs far less. Measured — see the spec's
+     Implementation notes. */
+  :global([data-theme='light']) .ambient {
+    --orb-violet: rgb(127 82 255 / 0.045);
+    --orb-green: rgb(61 220 132 / 0.085);
+  }
+
+  .ambient-orb {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+
+  /* Sized against vmin, not vw: on a short landscape viewport a vw-sized orb
+     is taller than the screen and the two would meet in the middle. */
+  .ambient-orb-violet {
+    width: min(58rem, 130vmin);
+    top: -22%;
+    right: -18%;
+    background: radial-gradient(circle, var(--orb-violet), transparent 68%);
+  }
+
+  .ambient-orb-green {
+    width: min(46rem, 110vmin);
+    bottom: -16%;
+    left: -18%;
+    background: radial-gradient(circle, var(--orb-green), transparent 68%);
+  }
+</style>
