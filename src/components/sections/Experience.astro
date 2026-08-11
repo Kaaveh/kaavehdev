@@ -49,19 +49,26 @@ function isoMonth(value: string): string | undefined {
                 <span class="role">{entry.role}</span>
               </h3>
 
-              <p class="timeline-dates">
-                <time datetime={isoMonth(entry.start)}>{entry.start}</time>
-                <span aria-hidden="true"> – </span>
-                {entry.end ? (
-                  <time datetime={isoMonth(entry.end)}>{entry.end}</time>
-                ) : (
-                  <span>Present</span>
-                )}
-              </p>
+              {entry.start ? (
+                <p class="timeline-dates">
+                  <time datetime={isoMonth(entry.start)}>{entry.start}</time>
+                  <span aria-hidden="true"> – </span>
+                  {entry.end ? (
+                    <time datetime={isoMonth(entry.end)}>{entry.end}</time>
+                  ) : (
+                    <span>Present</span>
+                  )}
+                </p>
+              ) : (
+                /* No dates on the resume — its own wording stands in. */
+                entry.dateNote && <p class="timeline-dates">{entry.dateNote}</p>
+              )}
 
-              <p class="timeline-blurb">
-                <Highlighted text={entry.blurb} highlights={entry.highlights} />
-              </p>
+              {entry.blurb && (
+                <p class="timeline-blurb">
+                  <Highlighted text={entry.blurb} highlights={entry.highlights} />
+                </p>
+              )}
 
               <ul class="timeline-bullets">
                 {entry.bullets.map((bullet) => (

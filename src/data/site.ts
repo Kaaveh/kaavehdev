@@ -5,9 +5,9 @@ export const site: SiteInfo = {
   title: 'Senior Android Engineer',
   location: 'Yerevan, Armenia · Open to relocation',
   summary:
-    '7+ years building consumer apps at scale, specializing in Jetpack Compose ' +
+    '8+ years building consumer apps at scale, specializing in Jetpack Compose ' +
     'migrations, modular architecture, and developer productivity. Active ' +
-    'contributor to the Android community — 3 conference talks, 7 Medium ' +
+    'contributor to the Android community — 4 conference talks, 8 Medium ' +
     'articles, and open-source projects with 500+ combined stars.',
   siteUrl: 'https://kaavehdev.ir',
   resumePdf: '/resume/Kaaveh_Mohamedi.pdf',

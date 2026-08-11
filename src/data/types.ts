@@ -29,17 +29,25 @@ export interface SiteInfo {
 export interface ExperienceEntry {
   company: string;
   role: string;
-  /** Human-readable month + year, e.g. "February 2025". */
-  start: string;
+  /**
+   * Human-readable month + year, e.g. "February 2025". Omitted for a role the
+   * resume gives no dates for (e.g. ongoing consulting) — `dateNote` then
+   * stands in for the date range. Never invent dates to fill this.
+   */
+  start?: string;
   /** Omitted while the role is current — render as "Present". */
   end?: string;
-  /** One-line platform blurb shown under the role. */
-  blurb: string;
+  /** Verbatim stand-in shown when `start` is absent, e.g. the resume's
+   * "alongside full-time roles". Ignored when `start` is present. */
+  dateNote?: string;
+  /** One-line platform blurb shown under the role. Omitted when the resume
+   * gives none (the entry then goes straight to its bullets). */
+  blurb?: string;
   /** Resume bullets, verbatim. */
   bullets: string[];
   /**
    * Exact metric substrings within `blurb`/`bullets` to visually emphasize
-   * (e.g. "55%", "10M+"). Each is a literal already present in the copy — never
+   * (e.g. "~50%", "10M+"). Each is a literal already present in the copy — never
    * a new fact — matched by exact substring so emphasis can't corrupt the text.
    */
   highlights?: string[];
@@ -51,16 +59,25 @@ export interface SkillGroup {
   skills: string[];
 }
 
-/** An open-source project card (007). */
+/**
+ * A project card (007).
+ *
+ * `repo`/`url`/`fallbackStars` are optional so a project whose source is not
+ * public can still be shown: it renders as a non-clickable card with no star
+ * badge — the same "never a guessed URL" rule spec 008 applies to talks.
+ */
 export interface Project {
   name: string;
-  /** GitHub "owner/name" slug, used for the build-time stars fetch (007). */
-  repo: string;
-  url: string;
+  /** GitHub "owner/name" slug for the build-time stars fetch. Omit if private. */
+  repo?: string;
+  /** Public URL. Omitted when the repo is private — the card renders unlinked. */
+  url?: string;
   description: string;
-  /** Committed star count used when the build-time fetch fails (007). */
-  fallbackStars: number;
+  /** Committed star count used when the build-time fetch fails. Omit if private. */
+  fallbackStars?: number;
   language: string;
+  /** Set when the source is not public: renders a "Private" chip and no link. */
+  isPrivate?: boolean;
   /** True for cards spec 007 may drop if the layout gets crowded. */
   optional?: boolean;
 }
