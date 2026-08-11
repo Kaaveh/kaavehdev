@@ -34,9 +34,9 @@ const ogImage = new URL('/og.png', site.siteUrl).href;
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- theme-color tracks --bg per color scheme. -->
-    <meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#fafbfd" media="(prefers-color-scheme: light)" />
+    <!-- theme-color tracks --bg for the *chosen* theme, not the OS one: the
+         scripts below resolve it pre-paint and ThemeToggle keeps it in sync. -->
+    <meta name="theme-color" content="#0b0e14" />
 
     <!-- Open Graph + Twitter card (one static OG image serves both pages). -->
     <meta property="og:type" content="website" />
@@ -66,6 +66,18 @@ const ogImage = new URL('/og.png', site.siteUrl).href;
           /* no localStorage: fall through to the default */
         }
         document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <script is:inline>
+      // Browser chrome follows the theme resolved above. Hexes mirror --bg in
+      // tokens.css, which isn't parsed yet at this point; after first paint
+      // ThemeToggle reads the real token instead.
+      (function () {
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.content =
+            document.documentElement.dataset.theme === 'light' ? '#fafbfd' : '#0b0e14';
+        }
       })();
     </script>
     <link rel="preload" href={headingFontUrl} as="font" type="font/woff2" crossorigin />

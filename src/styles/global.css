@@ -131,6 +131,39 @@ section[id] {
 }
 
 /*
+ * Theme swap — Telegram-style circular reveal.
+ * The default cross-fade is off: both snapshots hold still and the new one is
+ * clipped open by a circle growing from the toggle (animated in ThemeToggle).
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 0;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/*
+ * ::view-transition-new(root) renders live, so a paint transition triggered by
+ * the token swap plays out *inside* the growing circle: the revealed area would
+ * start on the old theme's colors and wash toward the new ones (measured: the
+ * nav links ramp over ~135ms of the 450ms reveal). ThemeToggle sets this
+ * attribute for the length of the swap so the reveal stays a hard edge.
+ */
+[data-theme-switching],
+[data-theme-switching] *,
+[data-theme-switching] *::before,
+[data-theme-switching] *::after {
+  transition: none !important;
+}
+
+/*
  * Reduced motion: content appears instantly, nothing moves.
  * Every animation added by later specs must be disabled here too.
  */
