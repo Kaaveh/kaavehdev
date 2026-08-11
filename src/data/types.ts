@@ -29,12 +29,20 @@ export interface SiteInfo {
 export interface ExperienceEntry {
   company: string;
   role: string;
-  /** Human-readable month + year, e.g. "February 2025". */
-  start: string;
+  /**
+   * Human-readable month + year, e.g. "February 2025". Omitted for a role the
+   * resume gives no dates for (e.g. ongoing consulting) — `dateNote` then
+   * stands in for the date range. Never invent dates to fill this.
+   */
+  start?: string;
   /** Omitted while the role is current — render as "Present". */
   end?: string;
-  /** One-line platform blurb shown under the role. */
-  blurb: string;
+  /** Verbatim stand-in shown when `start` is absent, e.g. the resume's
+   * "alongside full-time roles". Ignored when `start` is present. */
+  dateNote?: string;
+  /** One-line platform blurb shown under the role. Omitted when the resume
+   * gives none (the entry then goes straight to its bullets). */
+  blurb?: string;
   /** Resume bullets, verbatim. */
   bullets: string[];
   /**

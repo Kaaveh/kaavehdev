@@ -90,3 +90,33 @@ Other sections; nav (013).
   correct, all seven metrics wrapped and colored `--accent` (700 weight,
   `tabular-nums`), zero horizontal overflow, and the reduced-motion state renders
   both entries statically with the spine fully drawn.
+
+### Amendment 2026-08-11 — undated roles (resume PDF refresh)
+
+Kaaveh's updated resume PDF adds a third entry, **Independent Android
+Consultant — Consulting & Advisory**, which the `ExperienceEntry` contract could
+not express: the resume gives it **no dates and no platform blurb**, while
+`start` and `blurb` were both required. Rather than invent a start date:
+
+- `start` and `blurb` are now **optional**, and a new `dateNote?: string` holds
+  the resume's own stand-in for the date range ("Alongside full-time roles").
+  When `start` is absent the timeline renders `dateNote` in the `.timeline-dates`
+  slot; when it is absent too, the dates line is omitted entirely. The `<time
+  datetime>` machinery is untouched for dated entries.
+- The blurb paragraph renders only when the entry has one, so an undated entry
+  goes straight from its heading to its bullets.
+
+Also synced from the same PDF (wording is the resume's, verbatim):
+
+- Footballi bullet 2 reworded; the QA metric changed **55% → ~50%**, and
+  `highlights` follows it.
+- GityMarket bullet 1 reworded ("XML view" → "XML Views", metric restated as
+  "increasing feature delivery ~25%").
+- GityMarket CI bullet dropped its "merging/splitting modules based on business
+  logic" clause.
+
+**Verified**: `astro check` 0 errors / 0 warnings; rendered HTML shows three
+timeline entries — Footballi (`February 2025 – Present`, blurb, 2 bullets),
+GityMarket (`June 2019 – February 2025`, blurb, 6 bullets), and the consultant
+entry (`Alongside full-time roles`, no blurb, 2 bullets) — with all seven metric
+highlights still wrapped in `<strong class="metric">`, now including `~50%`.
