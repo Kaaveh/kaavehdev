@@ -90,9 +90,9 @@ a {
   padding-block: var(--space-8);
 }
 
-/* Anchored sections land below the fixed nav (spec 013). */
+/* Anchored sections land below the floating nav capsule (specs 013, 016). */
 section[id] {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 6rem;
 }
 
 .section-label {
@@ -102,6 +102,52 @@ section[id] {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--accent);
+}
+
+/*
+ * Liquid Glass material — spec 016.
+ * `.glass` is the chrome grade; `.glass-strong` uses the denser fill and is
+ * required wherever the surface carries body-size text. Elements set their own
+ * radius; the blur is a token so a surface can dial it locally (the mobile
+ * sheet does). Never put `backdrop-filter` in a transition — it forces a full
+ * repaint of everything behind the element.
+ */
+.glass,
+.glass-strong {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+}
+
+/* Fallback 1 — no backdrop-filter: an unblurred translucent fill would just be
+   a washed-out panel, so drop to the opaque surface color.
+   Written as nested @supports rather than `not (A or B)`: the CSS minifier
+   rewrites the `or` form to test the unprefixed property alone, which would
+   flatten the glass on Safari <= 17 (prefixed-only). Nesting survives. */
+@supports not (backdrop-filter: blur(1px)) {
+  @supports not (-webkit-backdrop-filter: blur(1px)) {
+    .glass,
+    .glass-strong {
+      background: var(--surface);
+    }
+  }
+}
+
+/* Fallback 2 — the web analogue of Apple's "Reduce Transparency"; gets the same
+   respect as prefers-reduced-motion. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* Motion primitives */
