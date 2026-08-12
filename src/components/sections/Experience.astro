@@ -124,7 +124,10 @@ function isoMonth(value: string): string | undefined {
   }
 
   /* A bead sitting on the spine. The solid ring in --bg masks the line behind
-     it so it reads as a distinct node. */
+     it so it reads as a distinct node. Kept as --bg rather than glass by
+     spec 017: the orbs are subtle enough that it never reads as a solid disc
+     sitting on an orb. No other surface in this section needs migration —
+     the timeline has no card fill. */
   .timeline-node {
     position: absolute;
     top: 0.65em;

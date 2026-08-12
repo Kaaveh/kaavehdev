@@ -97,7 +97,7 @@ const courseTitle = course.title ?? `${course.topic} ${course.format}`;
       <!-- Mentoring -->
       <section class="group group--mentoring reveal" data-reveal-delay="260" aria-labelledby="writing-mentoring">
         <h3 id="writing-mentoring" class="group-title">Mentoring</h3>
-        <div class="mentoring-stat">
+        <div class="mentoring-stat glass-card glass-card-strong">
           <span class="mentoring-figure">{mentoring.stat}</span>
           <span class="mentoring-label">engineers mentored</span>
         </div>
@@ -261,16 +261,16 @@ const courseTitle = course.title ?? `${course.topic} ${course.format}`;
     transform: translateX(2px);
   }
 
-  /* --- Mentoring: bold stat treatment, echoing the metric accent elsewhere --- */
+  /* --- Mentoring: bold stat treatment, echoing the metric accent elsewhere.
+     Fill/border/radius/shadow come from .glass-card(-strong) — spec 017,
+     -strong since .mentoring-label is body-size text. Static (no
+     hover-lift): the card carries no link, so no sheen. --- */
   .mentoring-stat {
     margin-block-start: var(--space-5);
     display: flex;
     flex-direction: column;
     gap: var(--space-1);
     padding: var(--space-5) var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .mentoring-figure {
