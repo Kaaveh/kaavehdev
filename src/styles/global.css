@@ -125,6 +125,41 @@ section[id] {
   background: var(--glass-bg-strong);
 }
 
+/*
+ * Content-card glass — spec 017. Same look as `.glass` but at
+ * `--glass-blur-sm` (8px): cards are numerous and backdrop-filter cost scales
+ * with blurred area, so content glass is deliberately the cheap grade.
+ * `.glass-card-strong` swaps in `--glass-bg-strong`, required on any card
+ * carrying body-size text (016's contrast rule, extended to content).
+ * No nested glass: inner inlays (chips, footers, facade chrome) use
+ * `--glass-inlay-bg` instead — see tokens.css.
+ */
+.glass-card {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur-sm)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.glass-card-strong {
+  background: var(--glass-bg-strong);
+}
+
+/* Sheen: interactive cards keep `.hover-lift`'s transform + `--glow` (identity,
+   stays) but plain `.hover-lift:hover` swaps the whole box-shadow out for
+   `--glow`, which would erase the specular top edge. Keep both, same pattern
+   as the hero CTAs (016) — this is the "sheen". Never backdrop-filter in a
+   transition. */
+.glass-card.hover-lift:hover,
+.glass-card.hover-lift:focus-visible {
+  box-shadow: var(--glass-highlight), var(--glow);
+}
+
 /* Fallback 1 — no backdrop-filter: an unblurred translucent fill would just be
    a washed-out panel, so drop to the opaque surface color.
    Written as nested @supports rather than `not (A or B)`: the CSS minifier
@@ -133,8 +168,14 @@ section[id] {
 @supports not (backdrop-filter: blur(1px)) {
   @supports not (-webkit-backdrop-filter: blur(1px)) {
     .glass,
-    .glass-strong {
+    .glass-strong,
+    .glass-card,
+    .glass-card-strong {
       background: var(--surface);
+    }
+
+    :root {
+      --glass-inlay-bg: var(--surface-2);
     }
   }
 }
@@ -143,10 +184,16 @@ section[id] {
    respect as prefers-reduced-motion. */
 @media (prefers-reduced-transparency: reduce) {
   .glass,
-  .glass-strong {
+  .glass-strong,
+  .glass-card,
+  .glass-card-strong {
     background: var(--surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  :root {
+    --glass-inlay-bg: var(--surface-2);
   }
 }
 

@@ -17,7 +17,10 @@ import { podcasts } from '../../data/podcasts';
     <ul class="podcast-grid" role="list">
       {
         podcasts.map((podcast, index) => (
-          <li class="podcast-tile reveal hover-lift" data-reveal-delay={200 + index * 70}>
+          <li
+            class="podcast-tile glass-card glass-card-strong reveal hover-lift"
+            data-reveal-delay={200 + index * 70}
+          >
             <svg
               class="podcast-icon"
               width="28"
@@ -83,14 +86,13 @@ import { podcasts } from '../../data/podcasts';
     }
   }
 
+  /* Fill/border/radius/shadow/sheen come from .glass-card(-strong) — spec
+     017, -strong since .podcast-desc is body-size text. */
   .podcast-tile {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
     padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .podcast-icon {

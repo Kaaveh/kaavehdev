@@ -18,7 +18,7 @@ if (!featuredChannel?.url) {
     <p class="section-label reveal">// youtube</p>
     <h2 class="youtube-title reveal" data-reveal-delay="80">Code With Kaaveh</h2>
 
-    <div class="channel-card reveal hover-lift" data-reveal-delay="140">
+    <div class="channel-card glass-card glass-card-strong reveal hover-lift" data-reveal-delay="140">
       <svg
         class="channel-icon"
         width="40"
@@ -87,6 +87,8 @@ if (!featuredChannel?.url) {
     margin-block-start: var(--space-2);
   }
 
+  /* Fill/border/radius/shadow/sheen come from .glass-card(-strong) — spec
+     017, -strong since .channel-tagline is body-size text. */
   .channel-card {
     margin-block-start: var(--space-7);
     display: flex;
@@ -94,9 +96,6 @@ if (!featuredChannel?.url) {
     align-items: center;
     gap: var(--space-5);
     padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .channel-icon {
@@ -165,12 +164,14 @@ if (!featuredChannel?.url) {
     gap: var(--space-3);
   }
 
+  /* Inlay, not glass: the click-to-load facade chrome, named explicitly in
+     spec 017 as an inlay — no backdrop-filter here either. */
   .video-frame {
     position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: var(--radius-sm);
-    background: var(--surface-2);
+    background: var(--glass-inlay-bg);
   }
 
   .video-frame :global(iframe) {

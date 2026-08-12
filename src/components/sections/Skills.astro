@@ -12,7 +12,7 @@ import { skills } from '../../data/skills';
     <ul class="skills-grid" role="list">
       {
         skills.map((group, index) => (
-          <li class="skill-group reveal" data-reveal-delay={140 + index * 60}>
+          <li class="skill-group glass-card reveal" data-reveal-delay={140 + index * 60}>
             <h3 class="skill-group-title">{group.title}</h3>
             <ul class="chips" role="list">
               {group.skills.map((skill) => (
@@ -43,10 +43,11 @@ import { skills } from '../../data/skills';
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
 
+  /* Fill/border/radius/shadow come from .glass-card — spec 017. Plain (not
+     -strong): only the mono group title sits directly on the glass, the chip
+     labels sit on their own opaque inlay below. */
   .skill-group {
     padding: var(--space-5);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .skill-group-title {
@@ -80,9 +81,11 @@ import { skills } from '../../data/skills';
     gap: var(--space-2);
   }
 
+  /* Inlay, not glass: it sits on the card, not the page — no nested glass
+     (spec 017). --glass-inlay-bg is a translucent color-mix, no blur. */
   .chip {
     padding: var(--space-1) var(--space-3);
-    background: var(--surface);
+    background: var(--glass-inlay-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     font-size: 0.875rem;

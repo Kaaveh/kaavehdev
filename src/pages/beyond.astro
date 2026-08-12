@@ -51,7 +51,10 @@ const otherChannels = channels.filter((channel) => !channel.featured);
       <ul class="interest-grid" role="list">
         {
           interests.map((interest, index) => (
-            <li class="interest-tile reveal hover-lift" data-reveal-delay={140 + index * 60}>
+            <li
+              class="interest-tile glass-card reveal hover-lift"
+              data-reveal-delay={140 + index * 60}
+            >
               <span class="interest-glyph" aria-hidden="true">{interestGlyphs[interest] ?? '✦'}</span>
               <span class="interest-label">{interest}</span>
             </li>
@@ -73,7 +76,10 @@ const otherChannels = channels.filter((channel) => !channel.featured);
       <ul class="channel-grid" role="list">
         {
           otherChannels.map((channel, index) => (
-            <li class="channel-tile reveal hover-lift" data-reveal-delay={200 + index * 70}>
+            <li
+              class="channel-tile glass-card glass-card-strong reveal hover-lift"
+              data-reveal-delay={200 + index * 70}
+            >
               <h3 class="channel-name">{channel.name}</h3>
               <p class="channel-tagline">{channel.tagline}</p>
               {channel.url && (
@@ -192,6 +198,8 @@ const otherChannels = channels.filter((channel) => !channel.featured);
     }
   }
 
+  /* Fill/border/radius/shadow/sheen come from .glass-card — spec 017. Plain
+     (not -strong): only the short bold label sits on the glass, no prose. */
   .interest-tile {
     display: flex;
     flex-direction: column;
@@ -199,9 +207,6 @@ const otherChannels = channels.filter((channel) => !channel.featured);
     gap: var(--space-3);
     padding: var(--space-6) var(--space-4);
     text-align: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .interest-glyph {
@@ -239,14 +244,13 @@ const otherChannels = channels.filter((channel) => !channel.featured);
     }
   }
 
+  /* Fill/border/radius/shadow/sheen come from .glass-card(-strong) — spec
+     017, -strong since .channel-tagline is body-size text. */
   .channel-tile {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
     padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .channel-name {
