@@ -65,7 +65,9 @@ if (!featuredChannel?.url) {
                     loading="lazy"
                   />
                   <span class="play-icon" aria-hidden="true">
-                    ▶
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M6 5l8 5-8 5V5z" />
+                    </svg>
                   </span>
                 </button>
               </div>
@@ -83,6 +85,15 @@ if (!featuredChannel?.url) {
 </section>
 
 <style>
+  /* YouTube brand red — a deliberate, scoped exception to the site's accent
+     system (spec 009 originally kept this section on-palette; Kaaveh asked
+     2026-09-03 for the platform's own red on its icon/CTA/play button). Not
+     promoted to tokens.css: it belongs to this section only. */
+  .youtube {
+    --youtube-red: #ff0000;
+    --youtube-red-hover: #d90000;
+  }
+
   .youtube-title {
     margin-block-start: var(--space-2);
   }
@@ -100,7 +111,7 @@ if (!featuredChannel?.url) {
 
   .channel-icon {
     flex: none;
-    color: var(--accent);
+    color: var(--youtube-red);
   }
 
   .channel-body {
@@ -120,25 +131,30 @@ if (!featuredChannel?.url) {
     color: var(--text-2);
   }
 
-  /* Bold CTA, matching the Hero (004) primary button treatment. */
+  /* Bold CTA, matching the Hero (004) primary button treatment — YouTube red
+     instead of the brand gradient (see .youtube above). Black label text
+     keeps AA contrast (~5.25:1 on #ff0000; white would only clear ~4:1). */
   .channel-cta {
     flex: none;
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-5);
-    background: linear-gradient(135deg, #7f52ff, #3ddc84);
+    background: var(--youtube-red);
     color: #000;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-size: 1rem;
     font-weight: 700;
     text-decoration: none;
-    transition: transform var(--transition);
+    transition:
+      transform var(--transition),
+      background-color var(--transition);
   }
 
   .channel-cta:hover,
   .channel-cta:focus-visible {
+    background: var(--youtube-red-hover);
     transform: translateY(-2px);
   }
 
@@ -209,14 +225,17 @@ if (!featuredChannel?.url) {
     place-items: center;
     width: 3.5rem;
     height: 3.5rem;
-    background: var(--gradient);
+    background: var(--youtube-red);
     color: #000;
     border-radius: 50%;
-    font-size: 1.125rem;
-    /* Optically center the triangle glyph. */
-    padding-inline-start: 0.2rem;
     transition: transform var(--transition);
   }
+
+  /* A drawn triangle, not the ▶ glyph: font rendering gave that character an
+     asymmetric bounding box (it needed a manual padding nudge to look
+     centered, and the nudge only worked for one specific font/browser). This
+     path's bounding box is symmetric around the viewBox center, so `.play-icon`'s
+     own `place-items: center` centers it correctly with no compensating offset. */
 
   .video-play:hover .play-icon,
   .video-play:focus-visible .play-icon {

@@ -77,3 +77,16 @@ rank skills), other sections.
 - Verified in Chromium at 320 / 1440 in both themes: all 8 groups and 46 skills
   present (verbatim, in data order), zero horizontal overflow at any width, and
   the reduced-motion state renders every group statically.
+
+- 2026-09-03 — **eight groups became seven.** The new resume PDF restructures the
+  Skills section, so `src/data/skills.ts` was rewritten to match it: *Languages &
+  Async* → *Languages & Concurrency*; *Engineering Practices*, *Networking &
+  Data*, *Testing*, *Build & CI* and *Observability* were folded into *Data &
+  Networking*, *Testing & Quality* and *Build, CI/CD & Observability*; and a new
+  **AI-Assisted Development** group was added last. Requirement 2 and the
+  acceptance criteria above therefore read "8 groups" for the original scope —
+  the live count is 7 (54 chips). `Skills.astro` was not touched: the `auto-fit`
+  grid absorbs the new count (4 cards + 3 cards at 1440px). Chip labels are
+  title-cased for consistency with the rest of the site — the PDF lower-cases the
+  AI group's entries ("agentic workflows", "prompt engineering"). Re-verified in
+  Chromium at 375/1440: all 7 groups in data order, 0px horizontal overflow.

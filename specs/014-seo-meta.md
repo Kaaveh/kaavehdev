@@ -89,3 +89,11 @@ Analytics (deliberately none unless Kaaveh asks), multi-locale hreflang, blog RS
   (hard-coded hexes — `tokens.css` isn't parsed at that point) and kept in sync by
   `ThemeToggle`, which reads the real `--bg` back off the computed style so the
   colours stay defined only in `tokens.css`.
+
+- 2026-09-03 — **address + description re-synced to the new resume PDF.** The
+  `Person` JSON-LD (req. 5) now carries `addressLocality: "Tehran"` /
+  `addressCountry: "IR"` in place of Yerevan/AM. The home page's meta description
+  was also rewritten: it claimed "8+ years", which the PDF's new summary
+  contradicts ("+7 years"), so it now reads *"Senior Android Engineer with 7+
+  years building consumer Android apps — Android TV, Jetpack Compose, modular
+  architecture, and developer productivity."* (128 chars, inside the ~155 budget).
