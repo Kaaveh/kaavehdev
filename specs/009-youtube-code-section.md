@@ -40,7 +40,7 @@ are notorious Lighthouse killers.
 ## Design & UX notes
 
 - YouTube-red is off-palette: keep the site's accent system; the platform is clear
-  from the icon/wording.
+  from the icon/wording. **Reversed 2026-09-03 — see Implementation notes.**
 - The facade must not look broken — visible play affordance, real thumbnail.
 
 ## Acceptance criteria
@@ -68,3 +68,13 @@ YouTube Data API integration.
   `src/components/sections/YouTube.astro` but commented out. **Spec 011 must
   uncomment it** (the `<p class="beyond-link reveal">…</p>` block, right
   after the video grid) once `/beyond#channels` exists.
+- 2026-09-03 — **reversed the "YouTube-red is off-palette" call above, at
+  Kaaveh's explicit request.** The channel logo, the "Watch on YouTube" CTA,
+  and the video play buttons now use YouTube's own red (`#ff0000`, `#d90000`
+  hover) instead of `--accent`/`--gradient`. Scoped as `--youtube-red(-hover)`
+  custom properties on `.youtube` in the component's own `<style>` block —
+  not promoted to `tokens.css`, since it's this section's exception, not a
+  site-wide accent. Label text on the CTA/play button stayed black (not
+  white): black-on-`#ff0000` measures ~5.25:1, white only ~4:1, and AA needs
+  4.5:1 for this text size. Verified in Chromium, both themes: red renders
+  correctly, hover darkens to `#d90000`, `astro check`/build clean.
