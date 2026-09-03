@@ -1,20 +1,25 @@
 import type { SkillGroup } from './types';
 
-/** Eight groups, rendered in this order (006). */
+/**
+ * Seven groups, rendered in this order (006). Groups and members transcribed
+ * from the resume PDF's Skills section (2026-09-03 revision) — chip labels are
+ * title-cased to match the rest of the site; nothing is added or reordered.
+ */
 export const skills: SkillGroup[] = [
   {
-    title: 'Languages & Async',
+    title: 'Languages & Concurrency',
     skills: ['Kotlin', 'Kotlin Multiplatform (KMP)', 'Java', 'Coroutines', 'Flow'],
   },
   {
     title: 'UI & Platforms',
     skills: [
       'Jetpack Compose',
-      'Compose for TV & Wear OS',
+      'Android TV',
       'Material 3',
-      'XML Views',
       'Navigation 3',
-      'Media3/ExoPlayer',
+      'XML Views',
+      'Media3',
+      'ExoPlayer',
     ],
   },
   {
@@ -23,49 +28,65 @@ export const skills: SkillGroup[] = [
       'Clean Architecture',
       'MVI',
       'MVVM',
-      'Modularisation',
-      'SOLID',
-      'OOP',
+      'Modularization (multi-module)',
       'Server-Driven UI',
-      'Dagger-Hilt',
+      'SOLID',
+      'Dagger',
+      'Hilt',
       'Koin',
     ],
   },
   {
-    title: 'Engineering Practices',
-    skills: ['TDD', 'BDD', 'Spec-Driven Development'],
-  },
-  {
-    title: 'Networking & Data',
+    title: 'Data & Networking',
     skills: [
       'Retrofit',
       'OkHttp',
       'Ktor',
+      'GraphQL',
       'Room',
-      'SqlDelight',
+      'SQLDelight',
       'DataStore',
-      'Firebase',
       'WorkManager',
+      'Firebase',
     ],
   },
   {
-    title: 'Testing',
-    skills: ['JUnit', 'Kotest', 'Mockk', 'Turbine'],
-  },
-  {
-    title: 'Build & CI',
+    title: 'Testing & Quality',
     skills: [
-      'Gradle',
-      'Kotlin DSL',
-      'Convention Plugins',
-      'GitLab CI',
-      'GitHub Actions',
+      'TDD',
+      'BDD',
+      'JUnit',
+      'Kotest',
+      'MockK',
+      'Mockito',
+      'Turbine',
+      'Espresso',
+      'Robolectric',
       'Detekt',
       'ktlint',
     ],
   },
   {
-    title: 'Observability',
-    skills: ['Crashlytics', 'Firebase Analytics', 'Sentry', 'Appmetrica'],
+    title: 'Build, CI/CD & Observability',
+    skills: [
+      'Gradle',
+      'Kotlin DSL',
+      'GitLab CI',
+      'GitHub Actions',
+      'Crashlytics',
+      'Firebase Analytics',
+      'Sentry',
+      'AppMetrica',
+    ],
+  },
+  {
+    title: 'AI-Assisted Development',
+    skills: [
+      'Agentic Workflows',
+      'MCP',
+      'Prompt Engineering',
+      'Context Engineering',
+      'Spec-Driven Development',
+    ],
   },
 ];

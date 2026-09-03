@@ -187,3 +187,15 @@ resolves its own TODOs when it ships.
   now confirmed as `https://kaavehdev.ir`, so `siteUrl` was populated with that
   value (mirrored in `astro.config.mjs` `site`). The apex is canonical; the
   `cv.kaavehdev.ir` subdomain also serves the site.
+
+- 2026-09-03 — **resume refresh (new PDF revision).** `assets/resume/` and
+  `public/resume/Kaaveh_Mohamedi.pdf` were replaced with the revision Kaaveh
+  supplied, and the data layer was re-synced to it for the three facts he asked
+  for: `site.location` (Yerevan, Armenia → **Tehran, Iran**), `site.summary`
+  (replaced verbatim with the PDF's new opening paragraph — "+7 years…", note it
+  now leads on the Android TV launch, the ~40% CI win and AI-assisted-development
+  talks), and `skills.ts` (see 006). The PDF's other revisions — trimmed
+  Footballi/GityMarket bullets, "Volunteering" renamed to "Community &
+  Speaking", and `languages` (Persian → German A1) — are **not** yet reflected in
+  `experience.ts`/`education.ts`/`talks.ts`; they were left out of this pass
+  deliberately, pending Kaaveh's call.
