@@ -47,8 +47,10 @@ are notorious Lighthouse killers.
 
 - [x] Zero iframe/network requests to YouTube at page load (network tab clean);
       thumbnails only if videos are shown.
-- [x] If videos present: click loads and plays the right video via
-      youtube-nocookie; keyboard-operable buttons with accessible names.
+- [x] If videos present: clicking a card opens that video on youtube.com in a
+      new tab; keyboard-operable links with accessible names. (Was "loads an
+      inline youtube-nocookie embed" until 2026-09-04 — see Implementation
+      notes.)
 - [x] Channel CTA resolves to https://www.youtube.com/@CodeWithKaaveh.
 - [x] No dead `/beyond` link shipped (per requirement 3).
 - [x] Reveal + reduced-motion correct; layout holds at 320 px / 1440 px, both
@@ -78,3 +80,27 @@ YouTube Data API integration.
   white): black-on-`#ff0000` measures ~5.25:1, white only ~4:1, and AA needs
   4.5:1 for this text size. Verified in Chromium, both themes: red renders
   correctly, hover darkens to `#d90000`, `astro check`/build clean.
+
+- 2026-09-04 — **the click-to-load facade was replaced by a plain link out.**
+  Kaaveh reported that pressing play on the live site landed viewers on
+  YouTube's "Sign in to confirm you're not a bot" interstitial inside the
+  embed, so the inline player never actually played. Each video card is now a
+  single `<a href="https://www.youtube.com/watch?v=<id>" target="_blank"
+  rel="noopener noreferrer">` wrapping the thumbnail *and* the title, so a
+  click anywhere on the card opens the video on YouTube in a new tab. The
+  facade `<script>` and the `youtube-nocookie` iframe are gone entirely —
+  which strengthens the 000 constraint rather than weakening it: the section
+  now ships zero third-party iframes at any point in its lifetime, not just at
+  page load. Thumbnails still come from `i.ytimg.com`, unchanged.
+- 2026-09-04 — **play affordance restyled after Telegram's video preview**, at
+  Kaaveh's request (reference screenshot supplied). It is no longer a solid
+  YouTube-red chip: it is a translucent white disc (`rgb(255 255 255 / 0.28)`,
+  hairline white border, soft shadow) with a white rounded-join triangle,
+  sized as a share of the frame (`clamp(2.75rem, 15%, 3.75rem)`) so the
+  proportion matches the reference from 320 px to the 3-up desktop grid. The
+  YouTube red stays on the channel logo and the "Watch on YouTube" CTA.
+  A tight radial scrim (`.video-frame::after`) darkens just the centre of the
+  frame: a translucent white disc reads well over a dark thumbnail but
+  disappears over a bright one — and over the bare inlay when a thumbnail
+  fails to load. Verified in Chromium at 390 px and 1280 px, both themes, over
+  stand-in light and dark thumbnails; `astro check` and the build are clean.
