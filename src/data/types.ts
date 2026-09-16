@@ -162,6 +162,38 @@ export interface Video {
   title: string;
 }
 
+/** A literary translation (018). */
+export interface Translation {
+  /** Title in the target language, exactly as the book's own title page has it. */
+  title: string;
+  /** Romanised form of `title`, for readers who can't read the script. */
+  romanized: string;
+  /** The work being translated. */
+  sourceWork: string;
+  /** Author of the source work. */
+  sourceAuthor: string;
+  /** Target language, e.g. "Persian". */
+  language: string;
+  /** BCP 47 tag for `title`, e.g. "fa" — drives `lang`/`dir` on the title run. */
+  languageTag: string;
+  /** One-line progress note, shown on the card. */
+  status: string;
+  /** The translation's own repository. */
+  repoUrl: string;
+  /**
+   * Pinned release tag, e.g. "v0.0.2". Omitted until a release exists — while
+   * it is, the book is not fetched and the card links only to the repository.
+   * Release assets are expected to be named `<repo>-<version-without-v>-*`.
+   */
+  bookVersion?: string;
+  /**
+   * Reading URL of the rendered book, e.g. "/translations/linji-lu/". Also the
+   * path under `public/` that `scripts/fetch-book.mjs` unpacks the release
+   * bundle into. Omitted when there is nothing to read yet.
+   */
+  path?: string;
+}
+
 /** A podcast (012). */
 export interface Podcast {
   name: string;

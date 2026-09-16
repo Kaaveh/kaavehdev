@@ -33,8 +33,9 @@ Two pages, engineering first:
 
 ## Tech stack
 
-- **Astro** (latest stable), static output, TypeScript strict. No client-side JS
-  frameworks — plain `<script>`/TS where interactivity is needed.
+- **Astro** (latest stable), static output, TypeScript strict. Plain
+  `<script>`/TS is the default where interactivity is needed; a client-side
+  framework is allowed when something genuinely warrants one.
 - **Hosting**: Cloudflare Workers static assets. `wrangler.jsonc` points at
   `./dist`; Cloudflare Workers Builds deploys pushes to `main` with build command
   `npm run build`.

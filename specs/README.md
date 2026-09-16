@@ -28,6 +28,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 015 | [Polish: a11y & performance](./015-polish-a11y-performance.md)  | 001–014      | ✅ Done        |
 | 016 | [Liquid Glass: foundation & chrome](./016-liquid-glass-foundation.md) | 002, 013, 015 | ✅ Done        |
 | 017 | [Liquid Glass: content surfaces](./017-liquid-glass-surfaces.md) | 016         | ✅ Done        |
+| 018 | [Translations section](./018-translations-section.md)           | 003, 013, 017 | ✅ Done        |
 
 Recommended order: top to bottom. Specs 004–011 are independent of each other and
 can be done in any order once 002 and 003 are ✅. 014 can slot in any time after
