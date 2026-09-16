@@ -42,7 +42,7 @@ import { iconPaths } from '../icons';
       <a class="btn btn-primary hover-lift" href={site.resumePdf} download>
         Download Resume (PDF)
       </a>
-      <a class="btn btn-ghost hover-lift" href="#experience">
+      <a class="btn btn-ghost glass hover-lift" href="#experience">
         View experience <span aria-hidden="true">↓</span>
       </a>
     </div>
@@ -149,7 +149,7 @@ import { iconPaths } from '../icons';
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
     font-family: var(--font-heading);
     font-size: 1rem;
     font-weight: 700;
@@ -160,14 +160,23 @@ import { iconPaths } from '../icons';
   .btn-primary {
     /* Identity gradient pinned to the brand shades in both themes: the light
        theme's darker accents fail 4.5:1 with dark text, the brand shades pass
-       (#000 on #7f52ff — the gradient's worst case — is 4.55:1). */
+       (#000 on #7f52ff — the gradient's worst case — is 4.55:1). Spec 016 adds
+       the 1px edge and specular top of its glass sibling so the two CTAs read
+       as one family (and match in height). */
     background: linear-gradient(135deg, #7f52ff, #3ddc84);
     color: #000;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    box-shadow: var(--glass-highlight);
   }
 
+  /* Border and fill come from .glass. */
   .btn-ghost {
-    border: 1px solid var(--accent);
     color: var(--accent);
+  }
+
+  /* .hover-lift alone would swap the specular edge out for the glow — keep both. */
+  .btn.hover-lift:hover {
+    box-shadow: var(--glass-highlight), var(--glow);
   }
 
   /* Signature flourish: ambient gradient orbs drifting behind the content.

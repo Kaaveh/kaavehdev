@@ -40,10 +40,3 @@ export const mentoring: Mentoring = {
   stat: '20+',
   text: 'Mentored 20+ software engineers.',
 };
-
-/**
- * Also recorded as the education note in `education.ts` — specs 008/010 must
- * render it exactly once site-wide.
- */
-export const teaching =
-  'Taught Android development in collaboration with the IEEE student branch.';

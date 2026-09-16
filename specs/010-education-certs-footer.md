@@ -78,3 +78,15 @@ Nav header (013), the `/beyond` page itself (011).
 - Verified via `npm run build` (0 errors/warnings, `astro check` clean),
   `npm run build && npx wrangler dev` (200 OK, markup present in served
   output), and headless-Chromium screenshots at 375px/1440px in both themes.
+
+### Amendment 2026-08-11 — IEEE teaching note removed
+
+Kaaveh's updated resume PDF **dropped** the "Taught Android development in
+collaboration with the IEEE student branch." line from its Education section, so
+it no longer renders anywhere on the site. `EducationEntry.note` was already
+optional and the component already rendered it conditionally, so this is a pure
+data removal — no component or type change. The duplicate `teaching` export in
+`src/data/talks.ts` (kept only to pair with this note, and never imported) was
+removed with it, and the "renders here and only here" comments in
+`Education.astro` / `Writing.astro` were updated to match. `astro check` stays at
+0 errors / 0 warnings.

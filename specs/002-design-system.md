@@ -128,3 +128,24 @@ Real content/sections (003+), nav (013), OG/meta (014).
 - The reduced-motion guard targets `.reveal, .reveal.is-visible` so the
   `.is-visible` transform can never out-specify the guard — copy this pattern for
   every animation added by later specs.
+- **Theme swap is a circular reveal** (added after 015). The toggle wraps the
+  existing swap in `document.startViewTransition` and animates `clip-path` on
+  `::view-transition-new(root)` — a circle growing from the button's centre to
+  the farthest viewport corner, 450ms `cubic-bezier(.4,0,.2,1)`. The default
+  cross-fade is switched off in `global.css` (`animation: none` +
+  `mix-blend-mode: normal` on both pseudos, old at `z-index: 0`, new at `1`) so
+  the edge is a hard clip. Theme resolution, the `theme` localStorage key and the
+  pre-paint inline script are untouched; the reveal is purely a wrapper.
+  - No element gets a `view-transition-name` — a named element is lifted out of
+    the root snapshot and flickers. That includes the fixed `.site-header`.
+  - **`::view-transition-new(root)` renders live in Chromium**, so the reveal is
+    not a frozen image: any paint transition the token swap triggers plays out
+    *inside* the growing circle. Measured on the built site, `.nav-link` eased
+    through 8 intermediate colours over ~135ms, i.e. the revealed area started on
+    the old theme's text colour. `data-theme-switching` on `<html>` (set inside
+    the view-transition callback, cleared on `transition.finished`) suppresses
+    every transition for the length of the swap; with it, the colour goes old →
+    new in one step. Verified by A/B against a build with the rule stripped out.
+  - Guarded on `typeof document.startViewTransition !== 'function'` and
+    `prefers-reduced-motion: reduce` — both fall through to the plain instant
+    swap, which is why the feature needs no reduced-motion CSS of its own.

@@ -2,8 +2,8 @@
 // YouTube — spec 009. Featured-channel highlight for Code With Kaaveh,
 // rendered from `src/data/channels.ts` and `src/data/videos.ts`; no resume
 // facts live in this component. Per specs/000-overview.md, no third-party
-// iframes at page load: the video row is a click-to-load facade — only a
-// static thumbnail `<img>` ships until a video's play button is clicked.
+// iframes at page load — and since 2026-09-04 no iframes at all: each video
+// card is a plain link out to YouTube (see Implementation notes in spec 009).
 import { channels } from '../../data/channels';
 import { featuredVideos } from '../../data/videos';
 
@@ -18,7 +18,7 @@ if (!featuredChannel?.url) {
     <p class="section-label reveal">// youtube</p>
     <h2 class="youtube-title reveal" data-reveal-delay="80">Code With Kaaveh</h2>
 
-    <div class="channel-card reveal hover-lift" data-reveal-delay="140">
+    <div class="channel-card glass-card glass-card-strong reveal hover-lift" data-reveal-delay="140">
       <svg
         class="channel-icon"
         width="40"
@@ -49,13 +49,13 @@ if (!featuredChannel?.url) {
         <ul class="video-grid" role="list">
           {featuredVideos.map((video, index) => (
             <li class="video-item reveal" data-reveal-delay={200 + index * 80}>
-              <div
-                class="video-frame"
-                data-video-frame
-                data-video-id={video.id}
-                data-video-title={video.title}
+              <a
+                class="video-link"
+                href={`https://www.youtube.com/watch?v=${video.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <button type="button" class="video-play" aria-label={`Play ${video.title}`}>
+                <span class="video-frame">
                   <img
                     class="video-thumb"
                     src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
@@ -65,11 +65,19 @@ if (!featuredChannel?.url) {
                     loading="lazy"
                   />
                   <span class="play-icon" aria-hidden="true">
-                    ▶
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M8.6 6.4 17.4 12 8.6 17.6Z"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        stroke-width="2.4"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
                   </span>
-                </button>
-              </div>
-              <p class="video-title">{video.title}</p>
+                </span>
+                <span class="video-title">{video.title}</span>
+              </a>
             </li>
           ))}
         </ul>
@@ -83,10 +91,21 @@ if (!featuredChannel?.url) {
 </section>
 
 <style>
+  /* YouTube brand red — a deliberate, scoped exception to the site's accent
+     system (spec 009 originally kept this section on-palette; Kaaveh asked
+     2026-09-03 for the platform's own red on its icon/CTA). Not promoted to
+     tokens.css: it belongs to this section only. */
+  .youtube {
+    --youtube-red: #ff0000;
+    --youtube-red-hover: #d90000;
+  }
+
   .youtube-title {
     margin-block-start: var(--space-2);
   }
 
+  /* Fill/border/radius/shadow/sheen come from .glass-card(-strong) — spec
+     017, -strong since .channel-tagline is body-size text. */
   .channel-card {
     margin-block-start: var(--space-7);
     display: flex;
@@ -94,14 +113,11 @@ if (!featuredChannel?.url) {
     align-items: center;
     gap: var(--space-5);
     padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   .channel-icon {
     flex: none;
-    color: var(--accent);
+    color: var(--youtube-red);
   }
 
   .channel-body {
@@ -121,25 +137,30 @@ if (!featuredChannel?.url) {
     color: var(--text-2);
   }
 
-  /* Bold CTA, matching the Hero (004) primary button treatment. */
+  /* Bold CTA, matching the Hero (004) primary button treatment — YouTube red
+     instead of the brand gradient (see .youtube above). Black label text
+     keeps AA contrast (~5.25:1 on #ff0000; white would only clear ~4:1). */
   .channel-cta {
     flex: none;
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-5);
-    background: linear-gradient(135deg, #7f52ff, #3ddc84);
+    background: var(--youtube-red);
     color: #000;
     border-radius: var(--radius-sm);
     font-family: var(--font-heading);
     font-size: 1rem;
     font-weight: 700;
     text-decoration: none;
-    transition: transform var(--transition);
+    transition:
+      transform var(--transition),
+      background-color var(--transition);
   }
 
   .channel-cta:hover,
   .channel-cta:focus-visible {
+    background: var(--youtube-red-hover);
     transform: translateY(-2px);
   }
 
@@ -161,37 +182,30 @@ if (!featuredChannel?.url) {
 
   .video-item {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
   }
 
+  /* Whole card is one link out to YouTube (thumbnail + title), so the click
+     target matches what people expect from a video card and there is a single
+     tab stop per video. */
+  .video-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Inlay, not glass: the thumbnail chrome, named explicitly in spec 017 as an
+     inlay — no backdrop-filter here either. */
   .video-frame {
     position: relative;
+    display: grid;
+    place-items: center;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: var(--radius-sm);
-    background: var(--surface-2);
-  }
-
-  .video-frame :global(iframe) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-
-  .video-play {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
+    background: var(--glass-inlay-bg);
   }
 
   .video-thumb {
@@ -202,30 +216,73 @@ if (!featuredChannel?.url) {
     object-fit: cover;
   }
 
-  .play-icon {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    background: var(--gradient);
-    color: #000;
-    border-radius: 50%;
-    font-size: 1.125rem;
-    /* Optically center the triangle glyph. */
-    padding-inline-start: 0.2rem;
-    transition: transform var(--transition);
+  /* Centre scrim under the play disc. A translucent white button reads
+     beautifully over a dark thumbnail and disappears over a bright one (and
+     over the bare inlay, when a thumbnail 404s), so darken just the middle of
+     the frame — the same trick Telegram's video preview uses. */
+  .video-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgb(0 0 0 / 0.45) 0%, rgb(0 0 0 / 0.3) 13%, transparent 26%);
+    pointer-events: none;
   }
 
-  .video-play:hover .play-icon,
-  .video-play:focus-visible .play-icon {
+  /* Telegram-style play affordance: a large, translucent white disc with a
+     white triangle, sitting over the thumbnail rather than a solid brand-red
+     chip. Sized as a share of the frame width so it stays proportional from
+     320 px to a 3-up desktop grid. */
+  .play-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: clamp(2.75rem, 15%, 3.75rem);
+    aspect-ratio: 1;
+    background: rgb(255 255 255 / 0.28);
+    border: 1px solid rgb(255 255 255 / 0.45);
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 0.35);
+    transition:
+      transform var(--transition),
+      background-color var(--transition);
+  }
+
+  /* A drawn triangle, not the ▶ glyph: font rendering gave that character an
+     asymmetric bounding box (it needed a manual padding nudge to look
+     centered, and the nudge only worked for one specific font/browser). The
+     path is nudged ~1 unit right of the viewBox centre on purpose — a
+     geometrically centred triangle reads as sitting too far left inside a
+     circle. Rounded joins come from the stroke, matching Telegram's icon. */
+  .play-icon svg {
+    width: 42%;
+    height: 42%;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+  }
+
+  .video-link:hover .play-icon,
+  .video-link:focus-visible .play-icon {
+    background: rgb(255 255 255 / 0.42);
     transform: scale(1.08);
+  }
+
+  .video-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
   }
 
   .video-title {
     font-size: 0.9375rem;
     color: var(--text-2);
     line-height: 1.4;
+    transition: color var(--transition);
+  }
+
+  .video-link:hover .video-title,
+  .video-link:focus-visible .video-title {
+    color: var(--text);
   }
 
   .beyond-link {
@@ -252,44 +309,18 @@ if (!featuredChannel?.url) {
   @media (prefers-reduced-motion: reduce) {
     .channel-cta,
     .play-icon,
+    .video-title,
     .more-link {
       transition: none;
     }
 
     .channel-cta:hover,
     .channel-cta:focus-visible,
-    .video-play:hover .play-icon,
-    .video-play:focus-visible .play-icon,
+    .video-link:hover .play-icon,
+    .video-link:focus-visible .play-icon,
     .more-link:hover,
     .more-link:focus-visible {
       transform: none;
     }
   }
 </style>
-
-<script>
-  // Click-to-load facade: swap the thumbnail/button for a youtube-nocookie
-  // iframe only on click, so no video request fires at page load.
-  const frames = document.querySelectorAll<HTMLElement>('[data-video-frame]');
-
-  frames.forEach((frame) => {
-    const button = frame.querySelector<HTMLButtonElement>('.video-play');
-    button?.addEventListener(
-      'click',
-      () => {
-        const id = frame.dataset.videoId;
-        const title = frame.dataset.videoTitle ?? 'Video';
-        if (!id) return;
-
-        const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1`;
-        iframe.title = title;
-        iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-        iframe.allowFullscreen = true;
-        iframe.loading = 'lazy';
-        frame.replaceChildren(iframe);
-      },
-      { once: true },
-    );
-  });
-</script>

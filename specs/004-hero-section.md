@@ -98,3 +98,11 @@ Nav bar (013), other sections, SEO meta (014).
   `npm run dev` and `npx wrangler dev`. At 320×700 the CTAs start below the
   fold and reveal on first scroll — content is never clipped (`min-height`
   lets the hero grow).
+
+- 2026-09-03 — **hero copy re-synced to the new resume PDF.** Requirement 3's
+  location line now reads *Tehran, Iran · Open to relocation*, and the summary
+  paragraph (req. 4) is the PDF's new "+7 years…" paragraph. Both still render
+  straight from `src/data/site.ts`; no component change was needed. The longer
+  summary wraps to 6 lines at 60ch on desktop and 7 at 375px — re-verified at
+  375/768/1440 that the hero still grows rather than clipping (0px horizontal
+  overflow, nothing lost above the fold).

@@ -1,10 +1,10 @@
 ---
 // Theme toggle — spec 002. Flips `data-theme` on <html> and persists the
 // choice to localStorage (read pre-paint by the inline script in Base.astro).
-// Positioning is left to the page; spec 013 moves this into the nav.
+// Lives in the nav (spec 013); circular glass control since spec 016.
 ---
 
-<button type="button" data-theme-toggle aria-label="Switch to light theme">
+<button type="button" class="theme-toggle glass" data-theme-toggle aria-label="Switch to light theme">
   <svg
     class="icon-sun"
     width="20"
@@ -44,22 +44,26 @@
 </button>
 
 <style>
-  button {
+  /* Fill, border and specular edge come from .glass; the blur does not. This
+     button sits inside the glass nav capsule, and a backdrop-filtered ancestor
+     is a backdrop root — a nested blur would only re-blur the capsule's flat
+     fill while still costing a pass. */
+  .theme-toggle {
     display: grid;
     place-items: center;
     width: 44px;
     height: 44px;
-    background: var(--surface);
     color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-full);
     cursor: pointer;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     transition:
       border-color var(--transition),
       color var(--transition);
   }
 
-  button:hover {
+  .theme-toggle:hover {
     border-color: var(--accent);
     color: var(--accent);
   }
@@ -81,6 +85,7 @@
 <script>
   const root = document.documentElement;
   const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 
   const syncLabel = () => {
     toggle?.setAttribute(
@@ -89,16 +94,78 @@
     );
   };
 
-  toggle?.addEventListener('click', () => {
-    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-    root.dataset.theme = next;
+  // Mobile browser chrome follows --bg, read back from the token so the colors
+  // stay defined only in tokens.css.
+  const syncThemeColor = () => {
+    const bg = getComputedStyle(root).getPropertyValue('--bg').trim();
+    if (bg && themeColor) themeColor.content = bg;
+  };
+
+  const applyTheme = (theme: 'light' | 'dark') => {
+    root.dataset.theme = theme;
     try {
-      localStorage.setItem('theme', next);
+      localStorage.setItem('theme', theme);
     } catch {
       /* private mode: theme just won't persist */
     }
     syncLabel();
-  });
+    syncThemeColor();
+  };
+
+  if (toggle) {
+    toggle.addEventListener('click', async () => {
+      const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+
+      // No View Transitions, or motion is unwelcome: swap with nothing moving.
+      if (
+        typeof document.startViewTransition !== 'function' ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        applyTheme(next);
+        return;
+      }
+
+      // Telegram-style reveal: the new theme is clipped open by a circle growing
+      // from the button, the old one frozen underneath (see the
+      // ::view-transition rules in global.css).
+      const { left, top, width, height } = toggle.getBoundingClientRect();
+      const x = left + width / 2;
+      const y = top + height / 2;
+      // Reach the farthest viewport corner, or the circle stops short of it.
+      const radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y),
+      );
+
+      const transition = document.startViewTransition(() => {
+        // Freeze every paint transition for the swap — the new view renders
+        // live, so a running one would wash inside the circle (see global.css).
+        root.setAttribute('data-theme-switching', '');
+        applyTheme(next);
+      });
+
+      void transition.finished.finally(() => root.removeAttribute('data-theme-switching'));
+
+      try {
+        await transition.ready;
+      } catch {
+        /* transition skipped — the theme is applied either way */
+        return;
+      }
+
+      root.animate(
+        {
+          clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
+        },
+        {
+          duration: 450,
+          easing: 'cubic-bezier(.4, 0, .2, 1)',
+          pseudoElement: '::view-transition-new(root)',
+        },
+      );
+    });
+  }
 
   syncLabel();
+  syncThemeColor();
 </script>

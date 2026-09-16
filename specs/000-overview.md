@@ -6,8 +6,8 @@
 
 ## What this site is
 
-The personal website of **Kaaveh Mohamedi — Senior Android Engineer** (Yerevan,
-Armenia, open to relocation). It is two things at once, in this order of priority:
+The personal website of **Kaaveh Mohamedi — Senior Android Engineer** (Tehran,
+Iran, open to relocation). It is two things at once, in this order of priority:
 
 1. **An online resume** — the polished, always-current web version of his PDF
    resume, aimed at recruiters and fellow engineers.

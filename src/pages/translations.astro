@@ -1,5 +1,5 @@
 ---
-// Translations — spec 016. The site's own page for Kaaveh's literary
+// Translations — spec 018. The site's own page for Kaaveh's literary
 // translations; the books themselves are Quarto output fetched at build time
 // by scripts/fetch-book.mjs and served untouched from /translations/<slug>/.
 // All facts render from src/data/translations.ts.
@@ -14,7 +14,7 @@ import { translations, releaseAsset } from '../data/translations';
   description={`Literary translations by ${site.name} — Persian renderings of classical texts, readable online and as PDF or EPUB.`}
 >
   <section class="page-hero">
-    <div class="orb orb-green" aria-hidden="true"></div>
+    <div class="orb orb-violet" aria-hidden="true"></div>
     <div class="container page-hero-inner">
       <h1 class="page-title reveal">Translations</h1>
       <p class="page-intro reveal" data-reveal-delay="100">
@@ -37,7 +37,13 @@ import { translations, releaseAsset } from '../data/translations';
         {
           translations.map((translation, index) => (
             <li
-              class:list={['translation-card', 'reveal', translation.bookVersion && 'hover-lift']}
+              class:list={[
+                'translation-card',
+                'glass-card',
+                'glass-card-strong',
+                'reveal',
+                translation.bookVersion && 'hover-lift',
+              ]}
               data-reveal-delay={140 + index * 70}
             >
               <h3 class="translation-title" lang={translation.languageTag} dir="rtl">
@@ -100,16 +106,19 @@ import { translations, releaseAsset } from '../data/translations';
 </Base>
 
 <style>
-  /* Page hero — same shape as /beyond (011), green orb instead of violet. */
+  /* Page hero — the same shape and the same violet orb as /beyond (011). Violet
+     because Base's ambient layer (016) already washes this corner violet: a
+     second hue here would compound tints, which the light theme has no contrast
+     budget for. Same hue just deepens the wash. */
   .page-hero {
     position: relative;
     overflow: hidden;
     padding-block: var(--space-8) var(--space-7);
-    --orb-green: rgb(61 220 132 / 0.18);
+    --orb-violet: rgb(127 82 255 / 0.2);
   }
 
   :global([data-theme='light']) .page-hero {
-    --orb-green: rgb(11 128 67 / 0.12);
+    --orb-violet: rgb(127 82 255 / 0.12);
   }
 
   .page-hero-inner {
@@ -175,14 +184,13 @@ import { translations, releaseAsset } from '../data/translations';
     }
   }
 
+  /* Fill/border/radius/shadow/sheen come from .glass-card(-strong) — spec
+     017, -strong since the card carries body-size prose. */
   .translation-card {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
     padding: var(--space-6);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
   }
 
   /* The Persian run: right-to-left, and a system face that actually has the
@@ -247,10 +255,13 @@ import { translations, releaseAsset } from '../data/translations';
     font-weight: 600;
     /* Same pinned gradient + #000 as the hero's primary CTA (004): the brand
        shades pass 4.5:1 with black in both themes, the light theme's darker
-       accents don't. */
+       accents don't. Edge + specular top and the full radius come from spec
+       016, so this reads as one family with the hero CTAs. */
     color: #000;
     background: linear-gradient(135deg, #7f52ff, #3ddc84);
-    border-radius: var(--radius-sm);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: var(--radius-full);
+    box-shadow: var(--glass-highlight);
     text-decoration: none;
     transition: transform var(--transition);
   }
@@ -281,11 +292,11 @@ import { translations, releaseAsset } from '../data/translations';
     pointer-events: none;
   }
 
-  .orb-green {
+  .orb-violet {
     width: min(40rem, 110vw);
     top: -40%;
     right: -10%;
-    background: radial-gradient(circle, var(--orb-green), transparent 65%);
+    background: radial-gradient(circle, var(--orb-violet), transparent 65%);
     animation: orb-drift 20s ease-in-out infinite alternate;
   }
 

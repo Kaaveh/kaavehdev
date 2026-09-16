@@ -1,6 +1,6 @@
 // Fetches the pre-rendered Quarto books listed in src/data/translations.ts and
 // unpacks them into public/, from where Astro copies them to dist/ untouched
-// (spec 016).
+// (spec 018).
 //
 // Why fetch instead of render: Cloudflare Workers Builds has no Quarto or TeX,
 // and committing the ~7 MB rendered book would dwarf this repo's history —

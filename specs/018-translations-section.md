@@ -1,4 +1,4 @@
-# 016 — Translations Section
+# 018 — Translations Section
 
 ## Context
 
@@ -46,7 +46,7 @@ makes updating the book a reviewable one-line change.
 
 ## Dependencies
 
-002 (design system), 003 (data layer), 013 (navigation).
+003 (data layer), 013 (navigation), 017 (Liquid Glass content surfaces).
 
 ## Requirements
 
@@ -129,6 +129,16 @@ every other page on the site.
 
 Implemented 2026-09-16. Deviations from the spec as written, and why:
 
+- **Renumbered 016 → 018.** This was drafted as spec 016, but the Liquid Glass
+  migration (016 + 017) landed on `main` first and took those numbers. Written
+  against the pre-Glass design system, the page was rebased onto it: the card
+  is `.glass-card .glass-card-strong` (body-size prose, so the denser fill) and
+  the "Read →" CTA picks up 016's 1px edge, specular top and full radius so it
+  matches the hero CTAs. The page-hero orb is **violet**, not green as first
+  built: Base's ambient layer already washes that corner violet, and 016 is
+  explicit that overlapping *different* hues compound past the light theme's
+  contrast budget. Same hue merely deepens the wash, which is what `/beyond`
+  does.
 - **Requirement 0 is already resolved.** By the time this was implemented the
   book repo had tagged **`v0.0.2`** (not `v0.1.0`), with all 75 sections
   translated and reviewed. So `bookVersion` ships set, not `null`. The `null`

@@ -1,7 +1,7 @@
 import type { Translation } from './types';
 
 /**
- * Kaaveh's literary translations (spec 016).
+ * Kaaveh's literary translations (spec 018).
  *
  * `bookVersion` is pinned deliberately rather than tracked as "latest": this
  * site only rebuilds when this repo changes, so "latest" would make the

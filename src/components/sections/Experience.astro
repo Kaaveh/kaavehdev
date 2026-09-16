@@ -49,19 +49,26 @@ function isoMonth(value: string): string | undefined {
                 <span class="role">{entry.role}</span>
               </h3>
 
-              <p class="timeline-dates">
-                <time datetime={isoMonth(entry.start)}>{entry.start}</time>
-                <span aria-hidden="true"> – </span>
-                {entry.end ? (
-                  <time datetime={isoMonth(entry.end)}>{entry.end}</time>
-                ) : (
-                  <span>Present</span>
-                )}
-              </p>
+              {entry.start ? (
+                <p class="timeline-dates">
+                  <time datetime={isoMonth(entry.start)}>{entry.start}</time>
+                  <span aria-hidden="true"> – </span>
+                  {entry.end ? (
+                    <time datetime={isoMonth(entry.end)}>{entry.end}</time>
+                  ) : (
+                    <span>Present</span>
+                  )}
+                </p>
+              ) : (
+                /* No dates on the resume — its own wording stands in. */
+                entry.dateNote && <p class="timeline-dates">{entry.dateNote}</p>
+              )}
 
-              <p class="timeline-blurb">
-                <Highlighted text={entry.blurb} highlights={entry.highlights} />
-              </p>
+              {entry.blurb && (
+                <p class="timeline-blurb">
+                  <Highlighted text={entry.blurb} highlights={entry.highlights} />
+                </p>
+              )}
 
               <ul class="timeline-bullets">
                 {entry.bullets.map((bullet) => (
@@ -117,7 +124,10 @@ function isoMonth(value: string): string | undefined {
   }
 
   /* A bead sitting on the spine. The solid ring in --bg masks the line behind
-     it so it reads as a distinct node. */
+     it so it reads as a distinct node. Kept as --bg rather than glass by
+     spec 017: the orbs are subtle enough that it never reads as a solid disc
+     sitting on an orb. No other surface in this section needs migration —
+     the timeline has no card fill. */
   .timeline-node {
     position: absolute;
     top: 0.65em;

@@ -4,9 +4,8 @@ export const education: EducationEntry[] = [
   {
     degree: 'Master of Science in Software Engineering',
     institution: 'Tarbiat Modares University',
-    // Also exported as `teaching` in talks.ts — specs 008/010 must render it
-    // exactly once site-wide.
-    note: 'Taught Android development in collaboration with the IEEE student branch.',
+    // The IEEE Android-teaching note was dropped from the resume PDF
+    // (2026-08-11) and so is no longer rendered anywhere on the site.
   },
 ];
 

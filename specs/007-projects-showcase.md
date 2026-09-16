@@ -94,3 +94,37 @@ Client-side/live star refresh, GitHub contribution graphs, pinned-repo API.
   at any width, all three cards + star badges + Kotlin chips present, reveal
   stagger fires on scroll (6/6 `is-visible`), and the section ships zero
   client-side JS (no `<script>` in the rendered section).
+
+### Amendment 2026-08-11 — private projects (ComposeBreak → Komposer)
+
+Content update requested by Kaaveh: **ComposeBreak was replaced by Komposer** in
+`src/data/projects.ts`. Komposer's repository is **private** (confirmed by Kaaveh;
+both `github.com/Kaaveh/Komposer` and the `github.com/Gity-Market/Komposer` slug
+printed on the resume PDF return 404 to a logged-out visitor), which requirement 2
+above did not anticipate — it assumed every card has a public GitHub URL and a
+star count. Rather than ship a card whose link 404s, the deviation:
+
+- **`Project.repo` / `url` / `fallbackStars` are now optional**, plus a new
+  `isPrivate?: boolean`. A project with no public repo renders as a plain `<div>`
+  card with **no link, no click affordance, and no star badge** — the same
+  "never a guessed URL" rule spec 008 already applies to talks with no recording.
+  A `Private repo` chip sits where `GitHub ↗` normally does, so the absent link
+  reads as deliberate rather than broken.
+- `resolveStars()` short-circuits to `stars: null` for such a project without
+  touching the network; the build log prints `no public repo` instead of
+  `live`/`fallback`. Requirement 3's timeout/fallback behaviour is unchanged for
+  the two public cards.
+- Hover/focus affordances (`border-color`, `.project-link` accent) are now scoped
+  to `a.project-card`, so the private card has no interactive styling.
+- The `<h2>` changed from **"Open source"** to **"Projects"** — the section is no
+  longer exclusively open source, and "Projects" already matches the nav label.
+- Komposer's description comes from Kaaveh's own README/resume wording; no star
+  count is invented for it.
+
+**Verified**: `npm run build` → `astro check` 0 errors / 0 warnings; build log
+shows `ComposeNews: 377★ (fallback) · SDP-Compose: 48★ (fallback) · Komposer: —★
+(no public repo)` (api.github.com is blocked in this sandbox, so the two public
+cards took the offline path as before). Rendered HTML confirms the Komposer card
+is a `<div class="project-card">` with no `href`, no `star-badge`, and the
+`Private repo` chip; the two public cards still render as single `<a>` elements
+with their star badges.

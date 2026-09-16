@@ -82,3 +82,18 @@ Analytics (deliberately none unless Kaaveh asks), multi-locale hreflang, blog RS
 - Lighthouse SEO is not scored in this session (headless run deferred to spec
   015); all inputs it checks — title, meta description, canonical, crawlable
   links, robots.txt, sitemap — are present.
+- **`theme-color` is no longer the media-attribute variant** (changed by the
+  theme-reveal work, see 002). The two `prefers-color-scheme` metas tracked the
+  *OS*, so a visitor on a light OS who chose dark got light browser chrome. It is
+  now a single meta: resolved pre-paint by a second inline script in `Base.astro`
+  (hard-coded hexes — `tokens.css` isn't parsed at that point) and kept in sync by
+  `ThemeToggle`, which reads the real `--bg` back off the computed style so the
+  colours stay defined only in `tokens.css`.
+
+- 2026-09-03 — **address + description re-synced to the new resume PDF.** The
+  `Person` JSON-LD (req. 5) now carries `addressLocality: "Tehran"` /
+  `addressCountry: "IR"` in place of Yerevan/AM. The home page's meta description
+  was also rewritten: it claimed "8+ years", which the PDF's new summary
+  contradicts ("+7 years"), so it now reads *"Senior Android Engineer with 7+
+  years building consumer Android apps — Android TV, Jetpack Compose, modular
+  architecture, and developer productivity."* (128 chars, inside the ~155 budget).
