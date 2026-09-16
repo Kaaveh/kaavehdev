@@ -6,6 +6,9 @@ node_modules/
 dist/
 .astro/
 
+# books fetched at build time by scripts/fetch-book.mjs (spec 016)
+public/translations/
+
 # wrangler files
 .wrangler
 .dev.vars*

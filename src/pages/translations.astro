@@ -1,0 +1,319 @@
+---
+// Translations — spec 016. The site's own page for Kaaveh's literary
+// translations; the books themselves are Quarto output fetched at build time
+// by scripts/fetch-book.mjs and served untouched from /translations/<slug>/.
+// All facts render from src/data/translations.ts.
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { translations, releaseAsset } from '../data/translations';
+---
+
+<Base
+  title={`Translations — ${site.name}`}
+  description={`Literary translations by ${site.name} — Persian renderings of classical texts, readable online and as PDF or EPUB.`}
+>
+  <section class="page-hero">
+    <div class="orb orb-green" aria-hidden="true"></div>
+    <div class="container page-hero-inner">
+      <h1 class="page-title reveal">Translations</h1>
+      <p class="page-intro reveal" data-reveal-delay="100">
+        Some evenings the compiler goes quiet and the dictionaries come out.
+        These are the texts I'm carrying into Persian — translated in the open,
+        versioned like software, free to read.
+      </p>
+      <p class="page-back reveal" data-reveal-delay="180">
+        <a class="back-link" href="/"><span aria-hidden="true">←</span> Back to the resume</a>
+      </p>
+    </div>
+  </section>
+
+  <section id="books" class="section">
+    <div class="container">
+      <p class="section-label reveal">// books</p>
+      <h2 class="section-title reveal" data-reveal-delay="80">In translation</h2>
+
+      <ul class="translation-grid" role="list">
+        {
+          translations.map((translation, index) => (
+            <li
+              class:list={['translation-card', 'reveal', translation.bookVersion && 'hover-lift']}
+              data-reveal-delay={140 + index * 70}
+            >
+              <h3 class="translation-title" lang={translation.languageTag} dir="rtl">
+                {translation.title}
+              </h3>
+              <p class="translation-romanized">{translation.romanized}</p>
+
+              <dl class="translation-meta">
+                <dt>Source</dt>
+                <dd>
+                  <cite>{translation.sourceWork}</cite> — {translation.sourceAuthor}
+                </dd>
+                <dt>Into</dt>
+                <dd>{translation.language}</dd>
+                <dt>Status</dt>
+                <dd>
+                  {translation.status}
+                  {translation.bookVersion ? (
+                    <> · {translation.bookVersion}</>
+                  ) : (
+                    <> · not published yet</>
+                  )}
+                </dd>
+              </dl>
+
+              <p class="translation-links">
+                {translation.bookVersion && translation.path && (
+                  <>
+                    <a class="read-link" href={translation.path}>
+                      Read <span aria-hidden="true">→</span>
+                    </a>
+                    <a class="file-link" href={releaseAsset(translation, '.pdf')}>
+                      PDF
+                    </a>
+                    <a class="file-link" href={releaseAsset(translation, '-mobile.pdf')}>
+                      PDF (phone)
+                    </a>
+                    <a class="file-link" href={releaseAsset(translation, '.epub')}>
+                      EPUB
+                    </a>
+                  </>
+                )}
+                <a
+                  class="file-link"
+                  href={translation.repoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Source on GitHub
+                </a>
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  /* Page hero — same shape as /beyond (011), green orb instead of violet. */
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--space-8) var(--space-7);
+    --orb-green: rgb(61 220 132 / 0.18);
+  }
+
+  :global([data-theme='light']) .page-hero {
+    --orb-green: rgb(11 128 67 / 0.12);
+  }
+
+  .page-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-block-start: var(--space-7);
+  }
+
+  .page-title {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .page-intro {
+    max-width: 60ch;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition:
+      color var(--transition),
+      transform var(--transition);
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--accent);
+    transform: translateX(-2px);
+  }
+
+  .section-title {
+    margin-block-start: var(--space-2);
+  }
+
+  .translation-grid {
+    list-style: none;
+    margin: 0;
+    margin-block-start: var(--space-6);
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 860px) {
+    .translation-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .translation-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  /* The Persian run: right-to-left, and a system face that actually has the
+     glyphs — the site's self-hosted fonts are Latin-only subsets. Slightly
+     larger because Arabic-script type reads small at matched sizes. */
+  .translation-title {
+    font-family: 'Vazirmatn', 'Noto Naskh Arabic', 'Geeza Pro', 'Segoe UI', system-ui, sans-serif;
+    font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+    line-height: 1.7;
+    text-align: right;
+  }
+
+  .translation-romanized {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--text-2);
+  }
+
+  .translation-meta {
+    margin: 0;
+    margin-block-start: var(--space-3);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-2) var(--space-4);
+    font-size: 0.9375rem;
+  }
+
+  .translation-meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    padding-block-start: 0.2em;
+  }
+
+  .translation-meta dd {
+    margin: 0;
+    color: var(--text);
+  }
+
+  .translation-meta cite {
+    font-style: italic;
+  }
+
+  .translation-links {
+    margin-block-start: auto;
+    padding-block-start: var(--space-5);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+  }
+
+  .read-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-weight: 600;
+    /* Same pinned gradient + #000 as the hero's primary CTA (004): the brand
+       shades pass 4.5:1 with black in both themes, the light theme's darker
+       accents don't. */
+    color: #000;
+    background: linear-gradient(135deg, #7f52ff, #3ddc84);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: transform var(--transition);
+  }
+
+  .read-link:hover,
+  .read-link:focus-visible {
+    transform: translateX(2px);
+  }
+
+  .file-link {
+    color: var(--text-2);
+    text-decoration: none;
+    border-block-end: 1px solid var(--border);
+    transition: color var(--transition);
+  }
+
+  .file-link:hover,
+  .file-link:focus-visible {
+    color: var(--accent);
+    border-block-end-color: var(--accent);
+  }
+
+  /* Single ambient orb behind the page hero. */
+  .orb {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .orb-green {
+    width: min(40rem, 110vw);
+    top: -40%;
+    right: -10%;
+    background: radial-gradient(circle, var(--orb-green), transparent 65%);
+    animation: orb-drift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes orb-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(-6%, 8%, 0) scale(1.1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb {
+      animation: none;
+    }
+
+    .back-link,
+    .read-link,
+    .file-link {
+      transition: none;
+    }
+
+    .back-link:hover,
+    .back-link:focus-visible,
+    .read-link:hover,
+    .read-link:focus-visible {
+      transform: none;
+    }
+  }
+</style>

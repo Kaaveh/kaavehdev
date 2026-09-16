@@ -51,5 +51,5 @@ session. The specs live in `specs/`.
 - Lighthouse (mobile) ≥ 90 in all categories.
 - Semantic HTML, keyboard accessible, visible focus states.
 - `prefers-reduced-motion` respected by every animation.
-- No client-side JS frameworks; motion via CSS + IntersectionObserver. Third-party
-  iframes only behind a click (facade pattern).
+- Motion via CSS + IntersectionObserver. Third-party iframes only behind a click
+  (facade pattern).

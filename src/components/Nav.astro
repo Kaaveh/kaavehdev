@@ -14,7 +14,15 @@ const links = [
   { label: 'YouTube', href: '/#youtube', id: 'youtube' },
 ];
 
-const isBeyond = Astro.url.pathname.startsWith('/beyond');
+// Page links (as opposed to the home-page anchors above). Spec 016 adds
+// Translations alongside Beyond Code.
+const pages = [
+  { label: 'Translations', href: '/translations', prefix: '/translations' },
+  { label: 'Beyond Code', href: '/beyond', prefix: '/beyond' },
+];
+
+const current = (prefix: string) =>
+  Astro.url.pathname.startsWith(prefix) ? ('page' as const) : undefined;
 ---
 
 <a class="skip-link" href="#main">Skip to content</a>
@@ -34,15 +42,15 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
           </li>
         ))
       }
-      <li>
-        <a
-          href="/beyond"
-          class="nav-link nav-beyond"
-          aria-current={isBeyond ? 'page' : undefined}
-        >
-          Beyond Code
-        </a>
-      </li>
+      {
+        pages.map((page) => (
+          <li>
+            <a href={page.href} class="nav-link nav-page" aria-current={current(page.prefix)}>
+              {page.label}
+            </a>
+          </li>
+        ))
+      }
     </ul>
 
     <div class="nav-controls">
@@ -80,16 +88,20 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
         </li>
       ))
     }
-    <li class="mobile-item" style={`--i:${links.length}`}>
-      <a
-        href="/beyond"
-        class="mobile-link mobile-beyond"
-        data-menu-link
-        aria-current={isBeyond ? 'page' : undefined}
-      >
-        Beyond Code
-      </a>
-    </li>
+    {
+      pages.map((page, i) => (
+        <li class="mobile-item" style={`--i:${links.length + i}`}>
+          <a
+            href={page.href}
+            class="mobile-link mobile-page"
+            data-menu-link
+            aria-current={current(page.prefix)}
+          >
+            {page.label}
+          </a>
+        </li>
+      ))
+    }
   </ul>
 </div>
 
@@ -166,6 +178,8 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     gap: var(--space-5);
     margin: 0;
     padding: 0;
+    /* role="list" keeps the semantics Safari drops with list-style: none. */
+    list-style: none;
   }
 
   .nav-link {
@@ -182,15 +196,15 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     color: var(--accent);
   }
 
-  .nav-beyond {
+  .nav-page {
     color: var(--text);
     padding: var(--space-2) var(--space-3);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
   }
 
-  .nav-beyond:hover,
-  .nav-beyond[aria-current='page'] {
+  .nav-page:hover,
+  .nav-page[aria-current='page'] {
     border-color: var(--accent);
     color: var(--accent);
   }
@@ -258,6 +272,7 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     gap: var(--space-5);
     margin: 0;
     padding: 0;
+    list-style: none;
   }
 
   .mobile-link {
@@ -285,14 +300,16 @@ const isBeyond = Astro.url.pathname.startsWith('/beyond');
     color: var(--accent);
   }
 
-  .mobile-beyond {
+  .mobile-page {
     background: var(--gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
-  @media (max-width: 767px) {
+  /* Two page pills (016) make the inline bar too wide for tablets, so the
+     hamburger now takes over below 960px rather than 768px. */
+  @media (max-width: 959px) {
     .nav-links {
       display: none;
     }
