@@ -153,4 +153,73 @@ containing the fixes.
 
 ## Implementation notes
 
-_(filled in during implementation)_
+Upstream work: [`Kaaveh/linji-lu-farsi` PR #1](https://github.com/Kaaveh/linji-lu-farsi/pull/1).
+
+### Defect 1 affects two chapters, not one
+
+The spec says «no other sidebar entry contains `[^…](…)`». It does — `fa/24.md`
+leaks too, and its `<title>` reads `۲۴۱`. Both leaks are visible in the rendered
+`v0.0.2` bundle; the grep that found only one was looking at the source files,
+where 24.md's marker does not sit on a heading. It gets there during the build:
+`tools/anchors.py` carried an `ORPHAN_MARKER` rule that reattached Part Three's
+note marker to the `# ۲۴` heading after dropping the Part heading it came from.
+So requirement 1 covers both files, and the acceptance criterion "no other
+chapter leaks" is what caught it.
+
+### Where the markers went
+
+- `ma-fang-preface.md` — onto the italic attribution line, beside
+  «منطقه چنگ-ته», which is the term note ۱ explains. Kaaveh's call, asked and
+  answered during implementation (the spec's first `TODO(Kaaveh)`).
+- `24.md` — onto the end of the first prose paragraph. Not a listed TODO, but
+  the same class of decision; applied consistently with the above rather than
+  blocking a second time. Note ۱ there glosses the *part* title
+  («آزمودن و سنجیدن»), which `fa/` drops entirely, so it had no natural home
+  either way.
+
+Both edits are made in `source/` as well as `fa/`, so the translation pipeline
+reproduces them instead of undoing them on the next run. `source/` is
+gitignored — the English text is not redistributed — so those two edits live
+only on Kaaveh's machine, which is why the regression guard had to be a grep
+over the *rendered* output rather than over the Markdown.
+
+### `ORPHAN_MARKER` deleted rather than patched
+
+Reattaching a note marker to a heading is the defect, so the rule that did it is
+gone. `restore()` now raises on a source heading carrying inline markup, naming
+the fix; the test that pinned the old behaviour was rewritten to pin the refusal.
+Requirement 1's suggested `release.yml` grep is there too, and it fires correctly
+on the old `v0.0.2` bundle.
+
+### Defect 2 reached further than the sidebar chevron
+
+Looking at the rendered page rather than the stylesheet turned up three more
+places carrying Quarto's physical geometry into an RTL document, all fixed in
+the same file:
+
+- `text-start` — Bootstrap's *logical* utility, compiled to
+  `text-align: left !important` in the LTR bundle. Quarto puts it on every
+  part-section title, so those sat flush left inside a right-to-left sidebar
+  while the chapter titles around them sat flush right. This, not the toggle's
+  placement, was what made the wrapped part titles look wrong.
+- The page TOC's `border-left` rule and `padding-left` nesting indent, which
+  detached the rule from the right-aligned text and stranded it on the far side.
+  Flipped to logical, using `currentColor` rather than a literal so `rtl.css`
+  still carries no colors and the active item's rule keeps turning green with
+  its text.
+- `margin-right` on the repo-action icons, which in RTL is the outer edge —
+  «ویرایش این صفحه در گیت‌هاب» was jammed against its icon.
+
+### Dark theme
+
+`cosmo` + `darkly`, Kaaveh's call (the spec's second `TODO(Kaaveh)`).
+
+Contrast was computed from the compiled dark bundle rather than eyeballed, since
+this session had no browser: prose, sidebar, page TOC and search panel 15.7–15.9:1,
+in-text links and TOC highlights 6.49:1, search input 13.77:1, navbar 12.22:1,
+footer 4.60:1 — all AA against darkly's `#222`.
+
+One thing the pair does not change: `cosmo` already `@import`s Source Sans Pro
+from Google Fonts, and `darkly` adds a Lato import the same way. Pre-existing, and
+inside the split-identity budget spec 018 accepted, so it was left alone — but it
+does mean the book makes font-CDN requests the rest of the site does not.
