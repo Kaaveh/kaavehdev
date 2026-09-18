@@ -46,6 +46,45 @@ session. The specs live in `specs/`.
 - Deployment: Cloudflare Workers Builds on push to `main`. The dashboard build
   command is `npm run build` (confirmed by Kaaveh, 2026-07-08).
 
+## Publishing a book
+
+The `/translations/<slug>/` books are rendered in their own repositories, never
+here — Cloudflare Workers Builds has no Quarto or TeX. Tagging a release there
+publishes it here, with no commit in this repo. The reasoning is in
+[`specs/021-switch-on-automatic-publishing.md`](./specs/021-switch-on-automatic-publishing.md);
+this is the checklist.
+
+**What a book repository owes the site**
+
+1. **Four unversioned release assets**, attached alongside the versioned ones, named
+   from one base (`<assetBase>`): `<assetBase>-html.tar.gz` (the rendered book, which
+   `scripts/fetch-book.mjs` unpacks), `<assetBase>.pdf`, `<assetBase>-mobile.pdf`,
+   `<assetBase>.epub`. The versioned copies stay — they are what makes an old
+   release page meaningful. Unversioned names are what
+   `releases/latest/download/…` resolves, so no GitHub API call is involved.
+2. **A relocatable bundle**, asserted in CI *before* the release is attached: no
+   root-absolute `href`/`src` in the rendered HTML, and no raw Markdown in the
+   sidebar. The site serves the bundle from a subpath and cannot fix either after
+   the fact — both fail only in production. Copy the two `grep` steps from any
+   book's `release.yml`.
+3. **The deploy-hook POST as the last step**, after the assets are attached,
+   guarded on the `SITE_DEPLOY_HOOK_URL` Actions secret so a fork does not fail.
+   A POST that does not report `"success": true` fails the release.
+4. **A real release, not a pre-release.** GitHub resolves `latest` to the newest
+   non-prerelease, non-draft release — so a pre-release is a free dry run: the
+   hook fires and the site rebuilds, but nothing user-facing changes.
+
+**What the site owes a book**: one entry in `src/data/translations.ts` —
+`assetBase`, `path`, `repoUrl`, and the card's facts, taken from the book's own
+`_quarto.yml` / README, never guessed. `status` is hand-written and stays
+hand-written. No `assetBase` → not fetched, renders as work in progress. No
+`repoUrl` → renders with no links, which is what a private repo gets.
+
+**The secret** is one Cloudflare deploy hook URL for the `kaavehdev` Worker
+(dashboard → Workers & Pages → `kaavehdev` → Settings → Builds → Deploy hooks),
+copied into each book repo. It is a credential: rotating it is one dashboard
+action plus one secret edit per repository.
+
 ## Quality bar (details in specs/000-overview.md)
 
 - Lighthouse (mobile) ≥ 90 in all categories.

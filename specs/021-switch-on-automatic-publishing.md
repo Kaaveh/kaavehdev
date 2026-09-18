@@ -149,7 +149,7 @@ no link.
 - [ ] Both books' four unversioned assets resolve through
       `releases/latest/download/…` after that release, and the versioned ones
       exist on the release page.
-- [ ] `CLAUDE.md` has the *Publishing a book* section.
+- [x] `CLAUDE.md` has the *Publishing a book* section.
 - [ ] Spec 020's first three acceptance criteria are now checked, and 020 is
       marked ✅.
 
@@ -175,4 +175,51 @@ different trigger.
 
 ## Implementation notes
 
-_(filled in during implementation)_
+**2026-09-18 — everything scriptable is done; the switch itself is not.**
+
+Done here and in the book repositories:
+
+- Requirement 2, plus one the spec did not anticipate. The two assertions are
+  ported to `Record_of_Linji`
+  ([PR #2](https://github.com/Kaaveh/Record_of_Linji/pull/2)) **and** to
+  `Lao_Tzu_Taoteching`
+  ([PR #1](https://github.com/Kaaveh/Lao_Tzu_Taoteching/pull/1)). The Taoteching
+  was onboarded after this spec was written (commit `8a9a780`), which makes it a
+  third book owing clause 2 of the contract, and its workflow asserted neither.
+  Verified before adding the steps, so neither can fail the next release: zero
+  hits for both greps across `Record_of_Linji`'s 82 and the Taoteching's 88
+  rendered pages, run on the bundles `releases/latest/download/` serves today.
+- Requirement 5. The *Publishing a book* section in `CLAUDE.md`, pointing here.
+- Requirement 6 is already satisfied by `8a9a780`: the Taoteching is public, has
+  a release, and has its `repoUrl`/`assetBase`/`path`/`status` entry. The
+  "wait for it to be public" out-of-scope note is now moot. What it still lacks
+  is the secret — see below.
+- Re-verified, as background for the criteria that stay open: all **twelve**
+  unversioned assets (four × three books) resolve through
+  `releases/latest/download/`, and `npm run build` is green.
+
+**Found while verifying — `linji-lu-farsi` is the fragile one.** Its four
+unversioned assets resolve today, but they are on release `v0.0.3` and its
+workflow on `main` does not produce them; PR #2 there, still open, is what adds
+them. So its *next* release attaches only versioned assets, `latest/download/`
+stops resolving, and this site's build fails on it. Merging that PR is not
+merely turning the hook on for that book — it is what keeps it working at all.
+
+Not done, because none of it is scriptable from here (updated from the
+Dependencies list above, checked 2026-09-18):
+
+| | state |
+|---|---|
+| Cloudflare deploy hook for `kaavehdev` | unknown — dashboard only, cannot be read from here |
+| `SITE_DEPLOY_HOOK_URL` in `Record_of_Linji` | absent (`gh secret list` empty) |
+| `SITE_DEPLOY_HOOK_URL` in `linji-lu-farsi` | absent |
+| `SITE_DEPLOY_HOOK_URL` in `Lao_Tzu_Taoteching` | absent — a **third** copy the spec did not list |
+| `Record_of_Linji#1` | merged 2026-09-18 |
+| `linji-lu-farsi#2` | open |
+
+Note the ordering hazard in Requirement 1 has already half-happened:
+`Record_of_Linji#1` is merged with no secret present, so its `Rebuild
+kaavehdev.ir` step currently takes the skip branch and a release there publishes
+nothing. That is the silent no-op the requirement warns about — harmless as long
+as the secret lands before the next tag. Set the hook and all three secrets
+first, then merge the three open PRs, then run Requirements 3 and 4.
