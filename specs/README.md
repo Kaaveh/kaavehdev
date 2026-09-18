@@ -29,12 +29,18 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 016 | [Liquid Glass: foundation & chrome](./016-liquid-glass-foundation.md) | 002, 013, 015 | ✅ Done        |
 | 017 | [Liquid Glass: content surfaces](./017-liquid-glass-surfaces.md) | 016         | ✅ Done        |
 | 018 | [Translations section](./018-translations-section.md)           | 003, 013, 017 | ✅ Done        |
+| 019 | [Book: RTL fixes & dark theme](./019-book-rtl-and-dark-theme.md) | 018        | ✅ Done        |
+| 020 | [Automatic book publishing](./020-automatic-book-publishing.md)  | 018, 019     | ⬜ Not started |
 
 Recommended order: top to bottom. Specs 004–011 are independent of each other and
 can be done in any order once 002 and 003 are ✅. 014 can slot in any time after
 003, but its OG image is most useful once the visual identity (002) exists.
 Specs 016–017 are the Liquid Glass theme migration and must run in order:
-016 (material + chrome) before 017 (content surfaces).
+016 (material + chrome) before 017 (content surfaces). 019 is the odd one out:
+almost all of it is implemented in the book's own repo, and this repo's share is
+a one-line version bump. 020 then removes that bump entirely — it spans both
+repos and is blocked on two things only Kaaveh can do (a Cloudflare deploy hook
+and a secret in the book repo), listed under its **Dependencies**.
 
 ## Definition of done (every spec)
 

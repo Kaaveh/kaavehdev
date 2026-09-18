@@ -9,7 +9,7 @@ import type { Translation } from './types';
  * reviewable one-line change here.
  *
  * Facts below come from the book repo itself (`_quarto.yml` title/subtitle and
- * the v0.0.2 release, read 2026-09-16), not from guesswork.
+ * the v0.0.3 release, read 2026-09-16), not from guesswork.
  */
 export const translations: Translation[] = [
   {
@@ -21,7 +21,7 @@ export const translations: Translation[] = [
     languageTag: 'fa',
     status: 'All 75 sections translated and reviewed',
     repoUrl: 'https://github.com/Kaaveh/linji-lu-farsi',
-    bookVersion: 'v0.0.2',
+    bookVersion: 'v0.0.3',
     path: '/translations/linji-lu/',
   },
 ];
