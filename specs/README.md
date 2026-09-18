@@ -31,6 +31,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 018 | [Translations section](./018-translations-section.md)           | 003, 013, 017 | ✅ Done        |
 | 019 | [Book: RTL fixes & dark theme](./019-book-rtl-and-dark-theme.md) | 018        | ✅ Done        |
 | 020 | [Automatic book publishing](./020-automatic-book-publishing.md)  | 018, 019     | 🟨 In progress |
+| 021 | [Switching automatic publishing on](./021-switch-on-automatic-publishing.md) | 020 | ⬜ Not started |
 
 Recommended order: top to bottom. Specs 004–011 are independent of each other and
 can be done in any order once 002 and 003 are ✅. 014 can slot in any time after
@@ -39,9 +40,10 @@ Specs 016–017 are the Liquid Glass theme migration and must run in order:
 016 (material + chrome) before 017 (content surfaces). 019 is the odd one out:
 almost all of it is implemented in the book's own repo, and this repo's share is
 a one-line version bump. 020 then removes that bump entirely — it spans
-every book repo and stays 🟨 until Kaaveh does the two things only he can (a
-Cloudflare deploy hook, and a `SITE_DEPLOY_HOOK_URL` secret in each book repo);
-see that spec's **Implementation notes** for exactly what is left.
+every book repo, and its code is merged. 021 is what switches it on: the deploy
+hook and the per-repo secret are Kaaveh's to create, so 020 stays 🟨 until 021
+is done, and 021 also writes down the contract a book repo has to satisfy before
+a fourth book needs it.
 
 ## Definition of done (every spec)
 
