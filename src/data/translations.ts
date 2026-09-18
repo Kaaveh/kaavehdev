@@ -40,17 +40,17 @@ export const translations: Translation[] = [
     path: '/translations/linji-lu/',
   },
   {
-    // Private repository and no release yet, so: no repoUrl (the link would 404
-    // for everyone but Kaaveh), no assetBase, no path. Renders as work in
-    // progress with no dead links — 018's behaviour.
-    title: 'دائو ده جینگ',
-    romanized: 'Dāo De Jing',
+    title: 'دائو دِ جینگِ لائوتزو',
+    romanized: 'Dāo De Jing-e Lao-tzu',
     sourceWork: "Lao-tzu's Taoteching",
     sourceAuthor:
       "Red Pine's translation, with selected commentaries from two millennia of Chinese exegesis",
     language: 'Persian',
     languageTag: 'fa',
-    status: 'All 81 verses translated; glossary, back matter and typesetting still to come',
+    status: 'Complete — 81 verses in two books, with commentaries of two millennia, glossary and apparatus',
+    repoUrl: 'https://github.com/Kaaveh/Lao_Tzu_Taoteching',
+    assetBase: 'lao-tzu-taoteching-farsi',
+    path: '/translations/lao-tzu-taoteching/',
   },
 ];
 
