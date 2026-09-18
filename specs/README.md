@@ -31,7 +31,7 @@ One spec = one implementation session. Update the **Status** column when you sta
 | 018 | [Translations section](./018-translations-section.md)           | 003, 013, 017 | ✅ Done        |
 | 019 | [Book: RTL fixes & dark theme](./019-book-rtl-and-dark-theme.md) | 018        | ✅ Done        |
 | 020 | [Automatic book publishing](./020-automatic-book-publishing.md)  | 018, 019     | 🟨 In progress |
-| 021 | [Switching automatic publishing on](./021-switch-on-automatic-publishing.md) | 020 | ⬜ Not started |
+| 021 | [Switching automatic publishing on](./021-switch-on-automatic-publishing.md) | 020 | 🟨 In progress |
 
 Recommended order: top to bottom. Specs 004–011 are independent of each other and
 can be done in any order once 002 and 003 are ✅. 014 can slot in any time after
@@ -43,7 +43,9 @@ a one-line version bump. 020 then removes that bump entirely — it spans
 every book repo, and its code is merged. 021 is what switches it on: the deploy
 hook and the per-repo secret are Kaaveh's to create, so 020 stays 🟨 until 021
 is done, and 021 also writes down the contract a book repo has to satisfy before
-a fourth book needs it.
+a fourth book needs it. 021 is 🟨 for exactly that reason: its code and its prose
+are done (see its implementation notes), and it stays open until the hook, three
+secrets and three PR merges exist and a real release proves the chain.
 
 ## Definition of done (every spec)
 
