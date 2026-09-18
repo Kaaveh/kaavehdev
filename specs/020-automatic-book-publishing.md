@@ -183,4 +183,75 @@ separate deploy. That is a strictly smaller spec than this one.
 
 ## Implementation notes
 
-_(filled in during implementation)_
+Implemented 2026-09-18. Three deviations, all because reality moved between
+writing the spec and implementing it.
+
+### There are three translations now, not one
+
+The spec assumes a single book in `Kaaveh/linji-lu-farsi`. Since it was written:
+
+- **`Kaaveh/Record_of_Linji`** — a second, fuller Linji: Ruth Fuller Sasaki's
+  translation and commentary, 81 sections in six books, released `v1.0.1`.
+  Kaaveh's call: **both Linji books stay on the site**, as separate cards at
+  separate paths (`/translations/record-of-linji/` and `/translations/linji-lu/`).
+- **`Kaaveh/Lao_Tzu_Taoteching`** — Red Pine's Taoteching. Private, no release,
+  no Quarto set-up yet. It renders as a work-in-progress card with **no links at
+  all**: a "Source on GitHub" link would 404 for every visitor while the repo is
+  private, so `repoUrl` is now optional too, and the links paragraph is omitted
+  entirely when a card has nothing to link to.
+
+Everything in requirements 1–2 was therefore done **twice**, once per published
+book repo, and `SITE_DEPLOY_HOOK_URL` has to be added to both.
+
+### `assetBase` replaces `bookVersion` (requirement 4)
+
+The asset base name is no longer derivable from the repository name —
+`Record_of_Linji` publishes `record-of-linji-farsi-*`. So the pin is replaced by
+`assetBase`, which does both jobs the spec asked for: it is the single home of
+the naming convention *and* it states "this book is published" directly, rather
+than implying it from a version string. A translation without it is never
+fetched and renders as work in progress.
+
+### The freshness stamp is an ETag (requirement 4, third bullet)
+
+`fetch-book.mjs` sends `If-None-Match` on the download itself and stores the
+response's ETag in `.astro/`. A 304 means the unpacked copy is current — one
+request, not a HEAD plus a GET, and no GitHub API call. Verified against the
+real CDN: the second run of a build 304s both books. If GitHub ever stops
+honouring the conditional, the failure mode is a re-download, not a wrong book.
+
+### The version chip is dropped (requirement 5)
+
+Kaaveh's call, and the cheaper of the two. `· not published yet` still shows on
+an unpublished card; a published card shows its hand-written `status` alone.
+Each book's own front page prints its version.
+
+### Old releases got the unversioned assets too
+
+`releases/latest/download/` only resolves names that exist on the *current*
+latest release, and the workflow change only affects *future* releases. So the
+four unversioned copies were uploaded to `Record_of_Linji v1.0.1` and
+`linji-lu-farsi v0.0.3` directly (`gh release upload`, same bytes, no re-render).
+Without that, this repo's build would 404 until the next tag.
+
+### What is verified, and what is not
+
+Verified here: both books fetch from `releases/latest/download/` with no API
+call; all eight unversioned URLs return 200 and the versioned ones still exist;
+a second run re-downloads nothing; the Taoteching card renders with no dead
+links; `npm run build` is clean (0 errors, 0 warnings).
+
+Not verifiable from this repo, and left for Kaaveh — the first three acceptance
+criteria depend on all of it:
+
+1. Create the deploy hook (Cloudflare → Workers & Pages → `kaavehdev` →
+   Settings → Builds → Deploy hooks, branch `main`).
+2. Add it as `SITE_DEPLOY_HOOK_URL` in **both** book repos.
+3. Merge the two release-workflow PRs:
+   [`Record_of_Linji#1`](https://github.com/Kaaveh/Record_of_Linji/pull/1),
+   [`linji-lu-farsi#2`](https://github.com/Kaaveh/linji-lu-farsi/pull/2).
+4. Tag a throwaway release and confirm a Workers build starts and serves the
+   change.
+
+The card's markup changed, so both themes and both widths still want an eye on
+them — no browser was available in the implementing session.

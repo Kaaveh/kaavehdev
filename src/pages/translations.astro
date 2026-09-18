@@ -42,7 +42,7 @@ import { translations, releaseAsset } from '../data/translations';
                 'glass-card',
                 'glass-card-strong',
                 'reveal',
-                translation.bookVersion && 'hover-lift',
+                translation.assetBase && 'hover-lift',
               ]}
               data-reveal-delay={140 + index * 70}
             >
@@ -61,16 +61,18 @@ import { translations, releaseAsset } from '../data/translations';
                 <dt>Status</dt>
                 <dd>
                   {translation.status}
-                  {translation.bookVersion ? (
-                    <> · {translation.bookVersion}</>
-                  ) : (
-                    <> · not published yet</>
-                  )}
+                  {/* No version chip: the site no longer knows the version (020),
+                      and each book's own front page prints its own. */}
+                  {!translation.assetBase && <> · not published yet</>}
                 </dd>
               </dl>
 
+              {/* A translation with neither a release nor a public repository
+                  (020) has nothing to link to; an empty <p> would just add a
+                  gap to the bottom of the card. */}
+              {(translation.assetBase || translation.repoUrl) && (
               <p class="translation-links">
-                {translation.bookVersion && translation.path && (
+                {translation.assetBase && translation.path && (
                   <>
                     <a class="read-link" href={translation.path}>
                       Read <span aria-hidden="true">→</span>
@@ -86,15 +88,18 @@ import { translations, releaseAsset } from '../data/translations';
                     </a>
                   </>
                 )}
-                <a
-                  class="file-link"
-                  href={translation.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Source on GitHub
-                </a>
+                {translation.repoUrl && (
+                  <a
+                    class="file-link"
+                    href={translation.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Source on GitHub
+                  </a>
+                )}
               </p>
+              )}
             </li>
           ))
         }

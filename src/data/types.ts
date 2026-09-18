@@ -178,14 +178,16 @@ export interface Translation {
   languageTag: string;
   /** One-line progress note, shown on the card. */
   status: string;
-  /** The translation's own repository. */
-  repoUrl: string;
+  /** The translation's own repository. Omitted while it is private (020). */
+  repoUrl?: string;
   /**
-   * Pinned release tag, e.g. "v0.0.2". Omitted until a release exists — while
-   * it is, the book is not fetched and the card links only to the repository.
-   * Release assets are expected to be named `<repo>-<version-without-v>-*`.
+   * Base name of the book's unversioned release assets, e.g.
+   * `record-of-linji-farsi` for `record-of-linji-farsi-html.tar.gz`. Its
+   * presence is what says "this book is published": the site always serves the
+   * repository's latest release (020), so there is no version to pin, and a
+   * translation without it renders as work in progress and is never fetched.
    */
-  bookVersion?: string;
+  assetBase?: string;
   /**
    * Reading URL of the rendered book, e.g. "/translations/linji-lu/". Also the
    * path under `public/` that `scripts/fetch-book.mjs` unpacks the release
