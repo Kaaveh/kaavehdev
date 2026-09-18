@@ -7,6 +7,12 @@
 // Quarto rewrites all 76 HTML files on any content edit. The bundle is
 // relocatable (all asset paths relative), so it serves fine from a subpath.
 //
+// Always the *latest* release, never a pinned tag (spec 020): tagging a release
+// in a book repo POSTs a Cloudflare deploy hook, which rebuilds this site, which
+// runs this script. `releases/latest/download/` resolves an unversioned asset
+// name, so no GitHub API call is involved — that API is 60 requests/hour per IP
+// and Cloudflare's build runners share IPs.
+//
 // Run by `npm run build` before `astro build`. Needs Node's built-in fetch and
 // the system `tar`; no npm dependency.
 import { execFileSync } from 'node:child_process';
@@ -20,12 +26,12 @@ import { releaseAsset, translations } from '../src/data/translations.ts';
 const root = fileURLToPath(new URL('..', import.meta.url));
 
 for (const translation of translations) {
-  const { title, bookVersion, path: bookPath } = translation;
+  const { title, assetBase, path: bookPath } = translation;
 
-  // No pinned release (or nowhere to serve it): nothing to do, and the card
+  // No published release (or nowhere to serve it): nothing to do, and the card
   // renders as work in progress. Not an error.
-  if (!bookVersion || !bookPath) {
-    console.log(`fetch-book: ${title} — no pinned version, skipping`);
+  if (!assetBase || !bookPath) {
+    console.log(`fetch-book: ${title} — not published yet, skipping`);
     continue;
   }
 
@@ -34,20 +40,24 @@ for (const translation of translations) {
   // never ships to dist/. Losing it only costs one re-download.
   const stamp = path.join(root, '.astro', `book${bookPath.replace(/\/$/, '').replace(/\//g, '-')}`);
 
-  const current =
-    existsSync(stamp) && readFileSync(stamp, 'utf8').trim() === bookVersion &&
-    existsSync(path.join(dir, 'index.html'));
+  // There is no version string to compare any more, so the freshness signal is
+  // the tarball's ETag, asked for in the same request that downloads it: a 304
+  // means the unpacked copy is current, which is what keeps `npm run dev` after
+  // a build from pulling 3 MB again.
+  const unpacked = existsSync(path.join(dir, 'index.html'));
+  const etag = unpacked && existsSync(stamp) ? readFileSync(stamp, 'utf8').trim() : '';
 
-  if (current) {
-    console.log(`fetch-book: ${bookPath} already at ${bookVersion}`);
+  const url = releaseAsset(translation, '-html.tar.gz');
+  console.log(`fetch-book: ${etag ? 'checking' : 'downloading'} ${url}`);
+
+  const response = await fetch(url, { headers: etag ? { 'if-none-match': etag } : {} });
+
+  if (response.status === 304) {
+    console.log(`fetch-book: ${bookPath} already current`);
     continue;
   }
 
-  const url = releaseAsset(translation, '-html.tar.gz');
-  console.log(`fetch-book: downloading ${url}`);
-
-  // A pinned version that can't be fetched is a real error — fail the build.
-  const response = await fetch(url);
+  // A published book that can't be fetched is a real error — fail the build.
   if (!response.ok) {
     throw new Error(`fetch-book: ${url} → HTTP ${response.status} ${response.statusText}`);
   }
@@ -68,7 +78,12 @@ for (const translation of translations) {
     throw new Error(`fetch-book: ${url} unpacked without an index.html`);
   }
 
-  mkdirSync(path.dirname(stamp), { recursive: true });
-  writeFileSync(stamp, `${bookVersion}\n`);
-  console.log(`fetch-book: ${bookPath} now at ${bookVersion}`);
+  // No ETag from the CDN: leave no stamp rather than a stamp that can't match.
+  const fresh = response.headers.get('etag');
+  rmSync(stamp, { force: true });
+  if (fresh) {
+    mkdirSync(path.dirname(stamp), { recursive: true });
+    writeFileSync(stamp, `${fresh}\n`);
+  }
+  console.log(`fetch-book: ${bookPath} updated`);
 }
