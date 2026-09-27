@@ -52,6 +52,19 @@ export const translations: Translation[] = [
     assetBase: 'lao-tzu-taoteching-farsi',
     path: '/translations/lao-tzu-taoteching/',
   },
+  {
+    title: 'ایک‌کیو و گلچین ابر دیوانه',
+    romanized: 'Ikkyū va Golchin-e Abr-e Divāneh',
+    sourceWork: 'Ikkyū and the Crazy Cloud Anthology: A Zen Poet of Medieval Japan',
+    sourceAuthor:
+      "Sonja Arntzen's translation of and commentary on the Kyōunshū of Ikkyū Sōjun (1394–1481)",
+    language: 'Persian',
+    languageTag: 'fa',
+    status: 'Complete — 126 poems and 15 prose introductions; machine-translated, with no hand revision',
+    repoUrl: 'https://github.com/Kaaveh/ikkyu_and_the_crazy_cloud_anthology_a_zen_poet_of_medieval_translation',
+    assetBase: 'ikkyu-crazy-cloud-anthology-fa',
+    path: '/translations/ikkyu-crazy-cloud/',
+  },
 ];
 
 /**
