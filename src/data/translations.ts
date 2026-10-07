@@ -11,7 +11,6 @@ import type { Translation } from './types';
  *
  * Facts below come from the book repositories themselves (`_quarto.yml`,
  * README, their own spec roadmaps — read 2026-09-18), not from guesswork.
- * `status` is the one thing no build can derive; it is hand-edited here.
  */
 export const translations: Translation[] = [
   {
@@ -22,7 +21,6 @@ export const translations: Translation[] = [
       "Ruth Fuller Sasaki's translation and commentary, edited by Thomas Yūhō Kirchner",
     language: 'Persian',
     languageTag: 'fa',
-    status: 'Complete — 81 sections in six books, with the Chinese text and historical introduction',
     repoUrl: 'https://github.com/Kaaveh/Record_of_Linji',
     assetBase: 'record-of-linji-farsi',
     path: '/translations/record-of-linji/',
@@ -34,7 +32,6 @@ export const translations: Translation[] = [
     sourceAuthor: "Burton Watson's rendering of the ninth-century Lín-chi lù (臨濟錄)",
     language: 'Persian',
     languageTag: 'fa',
-    status: 'All 75 sections translated and reviewed',
     repoUrl: 'https://github.com/Kaaveh/linji-lu-farsi',
     assetBase: 'linji-lu-farsi',
     path: '/translations/linji-lu/',
@@ -47,7 +44,6 @@ export const translations: Translation[] = [
       "Red Pine's translation, with selected commentaries from two millennia of Chinese exegesis",
     language: 'Persian',
     languageTag: 'fa',
-    status: 'Complete — 81 verses in two books, with commentaries of two millennia, glossary and apparatus',
     repoUrl: 'https://github.com/Kaaveh/Lao_Tzu_Taoteching',
     assetBase: 'lao-tzu-taoteching-farsi',
     path: '/translations/lao-tzu-taoteching/',
@@ -60,7 +56,6 @@ export const translations: Translation[] = [
       "Sonja Arntzen's translation of and commentary on the Kyōunshū of Ikkyū Sōjun (1394–1481)",
     language: 'Persian',
     languageTag: 'fa',
-    status: 'Complete — 126 poems and 15 prose introductions; machine-translated, with no hand revision',
     repoUrl: 'https://github.com/Kaaveh/ikkyu_and_the_crazy_cloud_anthology_a_zen_poet_of_medieval_translation',
     assetBase: 'ikkyu-crazy-cloud-anthology-fa',
     path: '/translations/ikkyu-crazy-cloud/',
@@ -74,8 +69,6 @@ export const translations: Translation[] = [
       "Jason Quinn's introduction to Zen in sixty questions and answers (Rockridge Press, 2021)",
     language: 'Persian',
     languageTag: 'fa',
-    status:
-      'Complete — 60 questions in four parts, with 12 Everyday Zen stories; machine-translated, terms and obvious errors fixed by hand, no full human edit',
     repoUrl: 'https://github.com/Kaaveh/No_Nonsense_Zen_for_Beginners',
     assetBase: 'no-nonsense-zen-fa',
     path: '/translations/no-nonsense-zen/',

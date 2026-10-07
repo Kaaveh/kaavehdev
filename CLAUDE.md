@@ -76,9 +76,8 @@ this is the checklist.
 
 **What the site owes a book**: one entry in `src/data/translations.ts` —
 `assetBase`, `path`, `repoUrl`, and the card's facts, taken from the book's own
-`_quarto.yml` / README, never guessed. `status` is hand-written and stays
-hand-written. No `assetBase` → not fetched, renders as work in progress. No
-`repoUrl` → renders with no links, which is what a private repo gets.
+`_quarto.yml` / README, never guessed. No `assetBase` → not fetched, renders
+as work in progress. No `repoUrl` → renders with no links, which is what a private repo gets.
 
 **The secret** is one Cloudflare deploy hook URL for the `kaavehdev` Worker
 (dashboard → Workers & Pages → `kaavehdev` → Settings → Builds → Deploy hooks),
