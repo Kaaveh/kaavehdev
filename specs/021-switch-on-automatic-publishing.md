@@ -49,7 +49,9 @@ investigation.
 020 (🟨 — its code is merged; its cross-repo criteria are what this spec
 finishes).
 
-Blocking, and Kaaveh's to do — none can be scripted from here:
+Blocking, and Kaaveh's to do — none can be scripted from here. **All three were
+done on 2026-09-18**; see the implementation notes. A fourth turned up that this
+list missed: the Taoteching needs the same secret.
 
 - **TODO(Kaaveh):** create a deploy hook for the `kaavehdev` Worker (Cloudflare
   dashboard → Workers & Pages → `kaavehdev` → Settings → Builds → Deploy hooks),
@@ -135,12 +137,12 @@ no link.
 
 ## Acceptance criteria
 
-- [ ] A deploy hook exists for `kaavehdev`, targeting `main`.
-- [ ] `SITE_DEPLOY_HOOK_URL` is set in both `Record_of_Linji` and
-      `linji-lu-farsi`, and both workflow PRs are merged.
-- [ ] `Record_of_Linji`'s release workflow asserts a relocatable bundle and a
+- [x] A deploy hook exists for `kaavehdev`, targeting `main`.
+- [x] `SITE_DEPLOY_HOOK_URL` is set in `Record_of_Linji`, `linji-lu-farsi` **and**
+      `Lao_Tzu_Taoteching`, and all workflow PRs are merged.
+- [x] `Record_of_Linji`'s release workflow asserts a relocatable bundle and a
       clean sidebar, and a release still succeeds with those steps in place.
-- [ ] A pre-release tag starts a Workers build and leaves the live book
+- [x] A pre-release tag starts a Workers build and leaves the live book
       unchanged.
 - [ ] A real release tag on one book puts changed content on
       `kaavehdev.ir/translations/<slug>/` with no commit in this repo, verified
@@ -205,21 +207,54 @@ them. So its *next* release attaches only versioned assets, `latest/download/`
 stops resolving, and this site's build fails on it. Merging that PR is not
 merely turning the hook on for that book — it is what keeps it working at all.
 
-Not done, because none of it is scriptable from here (updated from the
-Dependencies list above, checked 2026-09-18):
+At that point none of the switching-on was done, because none of it is
+scriptable from here — the hook, three secrets and three merges were all
+outstanding. The paragraph below closes that out.
 
-| | state |
+**2026-09-18, later — switched on, and the dry run passed.**
+
+The hook exists (Kaaveh, dashboard, branch `main`), and
+`SITE_DEPLOY_HOOK_URL` is set in all three book repositories — the URL was
+piped into `gh secret set` from a file, so it never passed through a
+transcript or shell history. All three workflow PRs are merged:
+`Record_of_Linji#2`, `Lao_Tzu_Taoteching#1`, `linji-lu-farsi#2`.
+
+One deviation, forced by the dry run. Requirement 3 assumes a pre-release tag
+is a free rehearsal, but `softprops/action-gh-release@v2` has no auto-detection
+— `prerelease` defaults to `false`, so `v1.0.2-rc.1` would have published a
+*normal* release and become the `latest` the site serves, which is the opposite
+of a rehearsal. Fixed once, permanently, in `Record_of_Linji#3`:
+`prerelease: ${{ contains(github.ref_name, '-') }}`. The other two books still
+lack that line; a suffixed tag there is not yet a safe rehearsal.
+
+The rehearsal itself, tag `v1.0.2-rc.1`, run `35353745863`:
+
+| | |
 |---|---|
-| Cloudflare deploy hook for `kaavehdev` | unknown — dashboard only, cannot be read from here |
-| `SITE_DEPLOY_HOOK_URL` in `Record_of_Linji` | absent (`gh secret list` empty) |
-| `SITE_DEPLOY_HOOK_URL` in `linji-lu-farsi` | absent |
-| `SITE_DEPLOY_HOOK_URL` in `Lao_Tzu_Taoteching` | absent — a **third** copy the spec did not list |
-| `Record_of_Linji#1` | merged 2026-09-18 |
-| `linji-lu-farsi#2` | open |
+| both new assertions | passed, on a real render |
+| hook POST | `{"success":true,"result":{"build_uuid":"d44d08a7…","status":"queued"}}` at 14:09:39Z |
+| Workers deployment | 14:10:39Z — one minute later, the first since 10:30:13Z |
+| release object | `prerelease: true`, all eight assets attached |
+| `latest` still resolves to | `v1.0.1` |
+| live book page | SHA-256 `fe3ac969…`, byte-identical before and after |
 
-Note the ordering hazard in Requirement 1 has already half-happened:
-`Record_of_Linji#1` is merged with no secret present, so its `Rebuild
-kaavehdev.ir` step currently takes the skip branch and a release there publishes
-nothing. That is the silent no-op the requirement warns about — harmless as long
-as the secret lands before the next tag. Set the hook and all three secrets
-first, then merge the three open PRs, then run Requirements 3 and 4.
+That is the whole chain except the last link: nothing *changed*, by design.
+
+The ordering hazard in Requirement 1 did half-happen on the way here:
+`Record_of_Linji#1` sat on `main` for a few hours with no secret present, so its
+`Rebuild kaavehdev.ir` step would have taken the skip branch. No tag was pushed
+in that window, so it cost nothing — but that *is* the silent no-op the
+requirement warns about, and the reason the secret goes in before the merge.
+
+**Still open**, and all of it needs Kaaveh:
+
+- **Requirement 4**, the real release. It needs a deliberate, visible change to
+  the book's text so the deployed result can be told apart from the old one, and
+  what to change is a translation decision, not one this repo can make.
+- The fork criterion (a release passing with the secret absent). Structurally
+  it is the `[ -z "$HOOK" ]` branch, which is covered by reading the workflow;
+  actually exercising it means a fork with no secret, which is not worth the
+  round trip.
+- Backporting `prerelease: ${{ contains(github.ref_name, '-') }}` to
+  `linji-lu-farsi` and `Lao_Tzu_Taoteching`, so a rehearsal is free there too.
+- Marking 020 ✅, which Requirement 4 gates.
