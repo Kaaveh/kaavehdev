@@ -174,8 +174,6 @@ export interface Translation {
   sourceWork: string;
   /** Author of the source work. */
   sourceAuthor: string;
-  /** Target language, e.g. "Persian". */
-  language: string;
   /** BCP 47 tag for `title`, e.g. "fa" — drives `lang`/`dir` on the title run. */
   languageTag: string;
   /** The translation's own repository. Omitted while it is private (020). */

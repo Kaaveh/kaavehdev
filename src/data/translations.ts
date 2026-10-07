@@ -19,7 +19,6 @@ export const translations: Translation[] = [
     sourceWork: 'The Record of Linji',
     sourceAuthor:
       "Ruth Fuller Sasaki's translation and commentary, edited by Thomas Yūhō Kirchner",
-    language: 'Persian',
     languageTag: 'fa',
     repoUrl: 'https://github.com/Kaaveh/Record_of_Linji',
     assetBase: 'record-of-linji-farsi',
@@ -30,7 +29,6 @@ export const translations: Translation[] = [
     romanized: 'Āmuzeh-hā-ye Zen-e Ostād Lin-chi',
     sourceWork: 'The Zen Teachings of Master Lin-chi',
     sourceAuthor: "Burton Watson's rendering of the ninth-century Lín-chi lù (臨濟錄)",
-    language: 'Persian',
     languageTag: 'fa',
     repoUrl: 'https://github.com/Kaaveh/linji-lu-farsi',
     assetBase: 'linji-lu-farsi',
@@ -42,7 +40,6 @@ export const translations: Translation[] = [
     sourceWork: "Lao-tzu's Taoteching",
     sourceAuthor:
       "Red Pine's translation, with selected commentaries from two millennia of Chinese exegesis",
-    language: 'Persian',
     languageTag: 'fa',
     repoUrl: 'https://github.com/Kaaveh/Lao_Tzu_Taoteching',
     assetBase: 'lao-tzu-taoteching-farsi',
@@ -54,7 +51,6 @@ export const translations: Translation[] = [
     sourceWork: 'Ikkyū and the Crazy Cloud Anthology: A Zen Poet of Medieval Japan',
     sourceAuthor:
       "Sonja Arntzen's translation of and commentary on the Kyōunshū of Ikkyū Sōjun (1394–1481)",
-    language: 'Persian',
     languageTag: 'fa',
     repoUrl: 'https://github.com/Kaaveh/ikkyu_and_the_crazy_cloud_anthology_a_zen_poet_of_medieval_translation',
     assetBase: 'ikkyu-crazy-cloud-anthology-fa',
@@ -67,7 +63,6 @@ export const translations: Translation[] = [
       'No-Nonsense Zen for Beginners: Clear Answers to Burning Questions About Core Zen Teachings',
     sourceAuthor:
       "Jason Quinn's introduction to Zen in sixty questions and answers (Rockridge Press, 2021)",
-    language: 'Persian',
     languageTag: 'fa',
     repoUrl: 'https://github.com/Kaaveh/No_Nonsense_Zen_for_Beginners',
     assetBase: 'no-nonsense-zen-fa',
