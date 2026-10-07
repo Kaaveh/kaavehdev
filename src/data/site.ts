@@ -5,11 +5,11 @@ export const site: SiteInfo = {
   title: 'Senior Android Engineer',
   location: 'Tehran, Iran · Open to relocation',
   summary:
-    '+7 years building consumer Android apps. Owned a new product ' +
-    'end-to-end on a platform with 10M+ MAU, the company’s fastest-growing ' +
-    'launch ever. Cut CI build times ~40% through modularization. Active in ' +
-    'the community: 4 conference talks, 8 Medium articles, 500+ GitHub stars, ' +
-    'and company-wide internal talks on AI-assisted development.',
+    '7+ years building consumer Android apps, plus architecture consulting ' +
+    'for a bank and a crypto exchange. Owned an Android TV app end-to-end on ' +
+    'a platform with 10M+ MAU. Cut CI build times 44% through ' +
+    'modularization. Active in the community: 4 conference talks, 8 Medium ' +
+    'articles, 500+ GitHub stars.',
   siteUrl: 'https://kaavehdev.ir',
   resumePdf: '/resume/Kaaveh_Mohamedi.pdf',
   contacts: [

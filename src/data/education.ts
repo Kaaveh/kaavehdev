@@ -2,10 +2,16 @@ import type { CertificateEntry, EducationEntry, LanguageSkill } from './types';
 
 export const education: EducationEntry[] = [
   {
-    degree: 'Master of Science in Software Engineering',
+    degree: 'Master of Science in Computer Software Engineering',
     institution: 'Tarbiat Modares University',
+    years: '2017 – 2019',
     // The IEEE Android-teaching note was dropped from the resume PDF
     // (2026-08-11) and so is no longer rendered anywhere on the site.
+  },
+  {
+    degree: 'Bachelor of Science in Computer Software Engineering',
+    institution: 'Guilan University',
+    years: '2013 – 2017',
   },
 ];
 

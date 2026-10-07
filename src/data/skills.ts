@@ -1,20 +1,20 @@
 import type { SkillGroup } from './types';
 
 /**
- * Seven groups, rendered in this order (006). Groups and members transcribed
- * from the resume PDF's Skills section (2026-09-03 revision) — chip labels are
+ * Rendered in this order (006). Groups and members transcribed from the resume
+ * PDF's Skills section (beta04, 2026-10-05 revision) — chip labels are
  * title-cased to match the rest of the site; nothing is added or reordered.
  */
 export const skills: SkillGroup[] = [
   {
     title: 'Languages & Concurrency',
-    skills: ['Kotlin', 'Kotlin Multiplatform (KMP)', 'Java', 'Coroutines', 'Flow'],
+    skills: ['Kotlin', 'Kotlin Multiplatform (KMP)', 'Java', 'Coroutines', 'Flow', 'Multithreading'],
   },
   {
     title: 'UI & Platforms',
     skills: [
       'Jetpack Compose',
-      'Android TV',
+      'Compose for TV',
       'Material 3',
       'Navigation 3',
       'XML Views',
@@ -23,17 +23,32 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
+    title: 'Accessibility',
+    skills: ['TalkBack', 'Compose Semantics', 'Font Scaling', 'Touch Targets', 'Focus Order'],
+  },
+  {
     title: 'Architecture & DI',
     skills: [
       'Clean Architecture',
       'MVI',
       'MVVM',
-      'Modularization (multi-module)',
+      'Modularization',
       'Server-Driven UI',
       'SOLID',
       'Dagger',
       'Hilt',
       'Koin',
+    ],
+  },
+  {
+    title: 'Performance & Stability',
+    skills: [
+      'Baseline Profiles',
+      'Macrobenchmark',
+      'LeakCanary',
+      'Android Profiler',
+      'Crashlytics',
+      'Sentry',
     ],
   },
   {
@@ -67,26 +82,25 @@ export const skills: SkillGroup[] = [
     ],
   },
   {
-    title: 'Build, CI/CD & Observability',
+    title: 'CI/CD & Observability',
     skills: [
       'Gradle',
       'Kotlin DSL',
       'GitLab CI',
       'GitHub Actions',
-      'Crashlytics',
       'Firebase Analytics',
-      'Sentry',
-      'AppMetrica',
+      'A/B Testing',
     ],
   },
   {
-    title: 'AI-Assisted Development',
+    title: 'AI & LLM',
     skills: [
       'Agentic Workflows',
       'MCP',
-      'Prompt Engineering',
-      'Context Engineering',
       'Spec-Driven Development',
+      'Spec Kit',
+      'Claude Code (Custom Skills)',
+      'Antigravity',
     ],
   },
 ];

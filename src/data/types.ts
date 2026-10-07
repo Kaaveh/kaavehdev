@@ -127,6 +127,8 @@ export interface Mentoring {
 export interface EducationEntry {
   degree: string;
   institution: string;
+  /** e.g. "2017 – 2019". */
+  years?: string;
   note?: string;
 }
 
