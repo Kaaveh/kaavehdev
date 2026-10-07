@@ -22,7 +22,10 @@ import { education, certificates, languages } from '../../data/education';
             education.map((entry) => (
               <li class="degree">
                 <p class="degree-name">{entry.degree}</p>
-                <p class="degree-meta">{entry.institution}</p>
+                <p class="degree-meta">
+                  {entry.institution}
+                  {entry.years && ` · ${entry.years}`}
+                </p>
                 {entry.note && <p class="degree-note">{entry.note}</p>}
               </li>
             ))

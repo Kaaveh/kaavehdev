@@ -1,59 +1,72 @@
 import type { ExperienceEntry } from './types';
 
-/** Ordered most recent first. Bullets verbatim from the resume. */
+/**
+ * Ordered most recent first. Bullets from the resume (beta04, 2026-10-05).
+ * Kept by Kaaveh's choice (2026-10-07) beyond the resume's digest: the tech
+ * details in the first two Oddrun bullets and the last three GityMarket bullets.
+ */
 export const experience: ExperienceEntry[] = [
   {
-    company: 'Footballi',
+    company: 'Oddrun',
     role: 'Senior Android Engineer',
     start: 'February 2025',
-    blurb: 'Live-streaming sports platform, 10M+ MAU, real-time data.',
+    blurb:
+      'Footballi: football-focused sports streaming platform with live ' +
+      'matches, real-time stats, and prediction games, serving 10M+ monthly ' +
+      'active users across Android, Android TV, iOS, and web. Part of a ' +
+      '15-person cross-functional team (backend, frontend, Android, product, ' +
+      'design), reporting to the Android Team Lead and the Product Owner.',
     bullets: [
-      'Shipped the Footballi Android TV app in ~2 months ahead of the 2026 ' +
-        'World Cup, owning UX decisions and delivering a Jetpack Compose for ' +
-        'TV build with Navigation3, Media3/ExoPlayer, and custom D-pad focus ' +
-        'handling.',
+      'Architected and shipped the Android TV MVP solo in 2 months (Jetpack ' +
+        'Compose for TV, Navigation3, Media3/ExoPlayer, custom D-pad focus ' +
+        'handling), shaping with the PO and designer its product and UX ' +
+        'decisions; TV grew to 36% of platform watch time, contributing to a ' +
+        '19% revenue growth in H1 2026.',
+      'Championed AI-assisted development company-wide through hosting ' +
+        'workshops, adopted by 30 engineers.',
       'Introduced automated integration testing (JUnit, Kotest), cutting ' +
-        'manual QA and shortening release cadence ~50%.',
+        'manual QA and shortening release cadence by ~50%.',
+      'Instrumenting playback telemetry (startup time, rebuffering, errors) ' +
+        'for a live-stream alerting platform, coordinating with backend and ' +
+        'DevOps to replace manual oversight with instant alerts to the ' +
+        'operations team.',
     ],
-    highlights: ['10M+', '~50%'],
+    highlights: ['10M+', '36%', '19%', '30 engineers', '~50%'],
+  },
+  {
+    company: 'Tabdeal',
+    role: 'Senior Android Engineer (Contract)',
+    start: 'September 2024',
+    end: 'February 2025',
+    blurb: 'Cryptocurrency exchange with 23M+ monthly active users.',
+    bullets: [
+      'Designed the native Android architecture for the PWA-to-native ' +
+        'migration, enabling 3 engineers to ship v1 in 4 months and raising ' +
+        'the Play Store rating from 3.7 to 4.3.',
+    ],
+    highlights: ['23M+', '3.7 to 4.3'],
   },
   {
     company: 'GityMarket',
     role: 'Android Engineer',
-    start: 'June 2019',
-    end: 'February 2025',
+    start: 'January 2019',
+    end: 'September 2024',
     blurb: 'E-commerce platform powering 1,000+ retail businesses.',
     bullets: [
+      'Cut CI build time by 44% (from 90 to 50 min) by restructuring 55 ' +
+        'Gradle modules and their dependencies.',
+      'Extended the Server-Driven UI framework to ship 3 features with no ' +
+        'Play Store release, shrinking lead time from 2 weeks to same-day.',
+      'Established a design system (themes, tokens, shared widgets) adopted ' +
+        'by 23 modules, reducing new-screen dev time by ~20%.',
       'Migrated core UI from XML Views to Jetpack Compose with reusable ' +
         'component libraries, increasing feature delivery ~25%.',
       'Transitioned app architecture from MVVM + Clean to MVI + Clean ' +
         '(feature modules), improving ViewModel testability and reducing ' +
         'UI-related bugs by ~10%.',
-      'Extended and maintained a Server-Driven UI framework, adding new ' +
-        'widgets that enabled easier deployment of new features without ' +
-        'needing a new Android app release.',
-      'Implemented a centralized Design system (themes, tokens, shared ' +
-        'widgets) used across modules — reduced UI inconsistency and dev time ' +
-        'for new screens by ~20%.',
-      'Reduced CI build times by 40% by refactoring module structure and ' +
-        'inter-module dependencies.',
       'Drove a codebase-wide migration off deprecated APIs ahead of ' +
         'targetSdk 34 / Android 14 compliance.',
     ],
-    highlights: ['1,000+', '~25%', '~10%', '~20%', '40%'],
-  },
-  {
-    // The resume gives this entry no dates and no platform blurb — it runs
-    // "alongside full-time roles", which stands in for the date range. Do not
-    // invent a start date. Listed third, matching the resume's own order.
-    company: 'Independent Android Consultant',
-    role: 'Consulting & Advisory',
-    dateNote: 'Alongside full-time roles',
-    bullets: [
-      'Designed the native Android architecture to migrate a major ' +
-        'cryptocurrency exchange from a PWA.',
-      'Served as technical consultant to a bank, guiding the refactoring of ' +
-        'its mobile app architecture.',
-    ],
+    highlights: ['1,000+', '44%', 'same-day', '~20%', '~25%', '~10%'],
   },
 ];
