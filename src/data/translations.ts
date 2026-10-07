@@ -65,6 +65,21 @@ export const translations: Translation[] = [
     assetBase: 'ikkyu-crazy-cloud-anthology-fa',
     path: '/translations/ikkyu-crazy-cloud/',
   },
+  {
+    title: 'ذن بی‌حاشیه برای تازه‌کارها',
+    romanized: 'Zen-e Bi-hāshiyeh barāye Tāzeh-kār-hā',
+    sourceWork:
+      'No-Nonsense Zen for Beginners: Clear Answers to Burning Questions About Core Zen Teachings',
+    sourceAuthor:
+      "Jason Quinn's introduction to Zen in sixty questions and answers (Rockridge Press, 2021)",
+    language: 'Persian',
+    languageTag: 'fa',
+    status:
+      'Complete — 60 questions in four parts, with 12 Everyday Zen stories; machine-translated, terms and obvious errors fixed by hand, no full human edit',
+    repoUrl: 'https://github.com/Kaaveh/No_Nonsense_Zen_for_Beginners',
+    assetBase: 'no-nonsense-zen-fa',
+    path: '/translations/no-nonsense-zen/',
+  },
 ];
 
 /**
