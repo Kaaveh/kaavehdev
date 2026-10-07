@@ -58,13 +58,12 @@ import { translations, releaseAsset } from '../data/translations';
                 </dd>
                 <dt>Into</dt>
                 <dd>{translation.language}</dd>
-                <dt>Status</dt>
-                <dd>
-                  {translation.status}
-                  {/* No version chip: the site no longer knows the version (020),
-                      and each book's own front page prints its own. */}
-                  {!translation.assetBase && <> · not published yet</>}
-                </dd>
+                {!translation.assetBase && (
+                  <>
+                    <dt>Status</dt>
+                    <dd>Not published yet</dd>
+                  </>
+                )}
               </dl>
 
               {/* A translation with neither a release nor a public repository

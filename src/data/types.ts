@@ -178,8 +178,6 @@ export interface Translation {
   language: string;
   /** BCP 47 tag for `title`, e.g. "fa" — drives `lang`/`dir` on the title run. */
   languageTag: string;
-  /** One-line progress note, shown on the card. */
-  status: string;
   /** The translation's own repository. Omitted while it is private (020). */
   repoUrl?: string;
   /**
